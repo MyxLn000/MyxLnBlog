@@ -19,16 +19,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"myxln000.github.io","root":"/MyxLnBlog/","images":"/MyxLnBlog/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/MyxLnBlog/js/config.js"></script>
 
-    <meta name="description" content="SSH的使用笔记[toc] 一些说明此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。 此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。 SSH其他笔记ssh生成的文件一般在路径~&#x2F;.ssh下，一般会生成三个文件：id_rsa  id_rsa.pub  known_hosts id_rsa为私钥，id_rsa.pub为公钥， kno">
+    <meta name="description" content="SSH的使用笔记一些说明此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。 此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。 SSH其他笔记ssh生成的文件一般在路径~&#x2F;.ssh下，一般会生成三个文件：id_rsa  id_rsa.pub  known_hosts id_rsa为私钥，id_rsa.pub为公钥， known_hos">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSH的使用笔记">
 <meta property="og:url" content="https://myxln000.github.io/MyxLnBlog/2023/10/03/SSH%E7%9A%84%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="MyxLnBlog">
-<meta property="og:description" content="SSH的使用笔记[toc] 一些说明此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。 此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。 SSH其他笔记ssh生成的文件一般在路径~&#x2F;.ssh下，一般会生成三个文件：id_rsa  id_rsa.pub  known_hosts id_rsa为私钥，id_rsa.pub为公钥， kno">
+<meta property="og:description" content="SSH的使用笔记一些说明此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。 此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。 SSH其他笔记ssh生成的文件一般在路径~&#x2F;.ssh下，一般会生成三个文件：id_rsa  id_rsa.pub  known_hosts id_rsa为私钥，id_rsa.pub为公钥， known_hos">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-03T09:27:18.000Z">
-<meta property="article:modified_time" content="2023-10-03T09:28:45.589Z">
+<meta property="article:modified_time" content="2023-10-03T11:42:06.889Z">
 <meta property="article:author" content="MyxLn000">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="ssh">
 <meta name="twitter:card" content="summary">
 
 
@@ -128,6 +130,16 @@
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/MyxLnBlog/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/MyxLnBlog/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
   </nav>
 </div>
 
@@ -182,7 +194,16 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-10-03 17:27:18 / 修改时间：17:28:45" itemprop="dateCreated datePublished" datetime="2023-10-03T17:27:18+08:00">2023-10-03</time>
+      <time title="创建时间：2023-10-03 17:27:18 / 修改时间：19:42:06" itemprop="dateCreated datePublished" datetime="2023-10-03T17:27:18+08:00">2023-10-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/MyxLnBlog/categories/Ubuntu%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">Ubuntu使用</span></a>
+        </span>
     </span>
 
   
@@ -194,8 +215,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="SSH的使用笔记"><a href="#SSH的使用笔记" class="headerlink" title="SSH的使用笔记"></a>SSH的使用笔记</h1><p>[toc]</p>
-<h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><p>此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="SSH的使用笔记"><a href="#SSH的使用笔记" class="headerlink" title="SSH的使用笔记"></a>SSH的使用笔记</h1><h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><p>此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。</p>
 <p>此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。</p>
 <h2 id="SSH其他笔记"><a href="#SSH其他笔记" class="headerlink" title="SSH其他笔记"></a>SSH其他笔记</h2><p>ssh生成的文件一般在路径<code>~/.ssh</code>下，一般会生成三个文件：<code>id_rsa  id_rsa.pub  known_hosts</code></p>
 <p>id_rsa为私钥，id_rsa.pub为公钥， known_hosts为记录的连接，ssh会把你每个你访问过计算机的公钥(public key)都记录在~&#x2F;.ssh&#x2F;known_hosts。当下次访问相同计算机时，OpenSSH会核对公钥。如果公钥不同，OpenSSH会发出警告， 避免你受到DNS Hijack之类的攻击。（摘自他人的一些理解，后续会更行）</p>
@@ -286,16 +306,20 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/MyxLnBlog/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/MyxLnBlog/tags/ssh/" rel="tag"># ssh</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/MyxLnBlog/2023/09/28/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-angle-left"></i> Hello World
-                </a>
             </div>
             <div class="post-nav-item">
+                <a href="/MyxLnBlog/2023/10/03/Wordpress%E5%BB%BA%E7%AB%99%E7%BB%8F%E9%AA%8C/" rel="next" title="Wordpress建站经验">
+                  Wordpress建站经验 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>
