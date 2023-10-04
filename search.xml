@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>SSH的使用笔记</title>
+    <url>/2023/10/03/SSH%E7%9A%84%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="SSH的使用笔记"><a href="#SSH的使用笔记" class="headerlink" title="SSH的使用笔记"></a>SSH的使用笔记</h1><h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><p>此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。</p>
+<p>此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。</p>
+<h2 id="SSH其他笔记"><a href="#SSH其他笔记" class="headerlink" title="SSH其他笔记"></a>SSH其他笔记</h2><p>ssh生成的文件一般在路径<code>~/.ssh</code>下，一般会生成三个文件：<code>id_rsa  id_rsa.pub  known_hosts</code></p>
+<p>id_rsa为私钥，id_rsa.pub为公钥， known_hosts为记录的连接，ssh会把你每个你访问过计算机的公钥(public key)都记录在~&#x2F;.ssh&#x2F;known_hosts。当下次访问相同计算机时，OpenSSH会核对公钥。如果公钥不同，OpenSSH会发出警告， 避免你受到DNS Hijack之类的攻击。（摘自他人的一些理解，后续会更行）</p>
+<p>其他的文件还有<code>config</code>：</p>
+<p>开始可能没有config文件，我们需要自己新建一个config文件。在使用ssh连接服务器时，经常要输入一些不同的主机地址和密码，使用config文件可以很好的解决这个问题，也就是说我们能够通过<strong>config文件能够实现免密登录</strong>。</p>
+<p><strong>config配置内容：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Host：服务名【可以随意取】</span><br><span class="line">HostName：linux服务器ip/主机名/域名</span><br><span class="line">User：用户名</span><br><span class="line">Port：端口号默认为22</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong><br>（1）若HostName中我们输入的是主机名和域名，那我们可能需要在&#x2F;etc&#x2F;hosts文件下配置IP和主机名或域名的映射。<br>（2）若我们在对应服务器中的authorized_keys文件都配置了密钥，那我们这里也不用配置User和Port两个配置项。</p>
+<h2 id="Windows上使用ssh访问本机VMware中的Ubuntu虚拟机"><a href="#Windows上使用ssh访问本机VMware中的Ubuntu虚拟机" class="headerlink" title="Windows上使用ssh访问本机VMware中的Ubuntu虚拟机"></a>Windows上使用ssh访问本机VMware中的Ubuntu虚拟机</h2><p>首先检查一下Ubuntu虚拟机上是否安装了ssh服务。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install openssh-server</span><br></pre></td></tr></table></figure>
+
+<p>启动ssh服务</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service ssh start</span><br></pre></td></tr></table></figure>
+
+<p>重启ssh服务</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service ssh restart</span><br></pre></td></tr></table></figure>
+
+<p>检查ssh服务是否在运行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo systemctl status ssh</span><br></pre></td></tr></table></figure>
+
+<p>如果有UFW防火墙，则打开ssh端口(未实验过)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo ufw allow ssh</span><br></pre></td></tr></table></figure>
+
+<p>打开VMware中的 <code>虚拟机-》虚拟机设置 </code>或者<code>CTRL+D</code>。选择网络适配器，此处用的是</p>
+<p>通过Windows上的终端</p>
+<p>此处用的是<a href="https://mobaxterm.mobatek.net/">MobaXterm</a></p>
+<p>使用ssh直接连接</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh 用户名username@IP地址xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
+
+<p>遇到<code>Are you sure you want to continue connecting (yes/no/[fingerprint])?</code></p>
+<p>直接输入<code>yes</code>即可。</p>
+<p><strong>其他相关命令</strong></p>
+<p>停止ssh服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo stop ssh</span><br></pre></td></tr></table></figure>
+
+<p>将ssh的客户端以及服务端卸载：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt-get remove openssh-client #卸载ssh客户端apt-get remove openssh-server #卸载ssh服务端</span><br></pre></td></tr></table></figure>
+
+<p>安装ssh服务端：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt-get install openssh-server </span><br></pre></td></tr></table></figure>
+
+<p> 安装ssh客户端：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt-get install openssh-client</span><br></pre></td></tr></table></figure>
+
+<h2 id="ssh生成密钥与删除密钥"><a href="#ssh生成密钥与删除密钥" class="headerlink" title="ssh生成密钥与删除密钥"></a>ssh生成密钥与删除密钥</h2><p><strong>检查已有的SSH KEY</strong></p>
+<p>首先，检查本地主机是否已经存在ssh key</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
+
+<p>看是否存在 id_rsa 和 id_rsa.pub文件，如果存在，说明已经有SSH Key，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">myx@myx-virtual-machine:~/.ssh$ ls</span><br><span class="line">id_rsa  id_rsa.pub  known_hosts</span><br></pre></td></tr></table></figure>
+
+<p>其中id_rsa为私钥，id_rsa.pub为公钥， known_hosts为记录的连接</p>
+<p>或者</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls -al ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>会直接给出当前用户的SSH密钥列表。</p>
+<p>__生成ssh key __（存在时则直接跳过生成ssh key）<br>如果不存在ssh key，使用如下命令生成</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;xxx@xxx.com&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行后一直回车即可，可按需求输入密码。</p>
+<p>生成完以后再用第二步命令，查看ssh key</p>
+<p>__获取ssh key公钥内容__（即id_rsa.pub）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">cat id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<p>之后就可以将公钥交给github之类的使用即可。</p>
+<p><strong>删除密钥</strong></p>
+<p>使用如下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ls -al ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>会直接给出当前用户的SSH密钥列表。</p>
+<p>找到要删除的密钥文件，使用以下命令删除：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rm ~/.ssh/密钥文件名</span><br></pre></td></tr></table></figure>
+
+<p>想要删除所有的ssh密钥，包括已经添加到ssh代理中的密钥(谨慎删除！)：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rm -rf ~/.ssh</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Ubuntu使用</category>
+      </categories>
+      <tags>
+        <tag>Ubuntu</tag>
+        <tag>ssh</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Wordpress建站经验</title>
+    <url>/2023/10/03/Wordpress%E5%BB%BA%E7%AB%99%E7%BB%8F%E9%AA%8C/</url>
+    <content><![CDATA[<h1 id="Wordpress建站经验"><a href="#Wordpress建站经验" class="headerlink" title="Wordpress建站经验"></a>Wordpress建站经验</h1><h2 id="WordPress配置流程"><a href="#WordPress配置流程" class="headerlink" title="WordPress配置流程"></a>WordPress配置流程</h2><p>大致为</p>
+<h3 id="安装MySQL并创建wordpress数据库，安装Nginx"><a href="#安装MySQL并创建wordpress数据库，安装Nginx" class="headerlink" title="安装MySQL并创建wordpress数据库，安装Nginx"></a>安装MySQL并创建wordpress数据库，安装Nginx</h3><p>（之前看一篇博客要安装Apache？存疑，后面用的是Nginx代理，似乎没用到Apache）</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install apache2</span><br><span class="line">sudo apt install mysql-server</span><br></pre></td></tr></table></figure>
+
+<p>Apache好像可以不用安装？存疑，未尝试。</p>
+<p>然后设置MySQL服务器</p>
+<p>先创建一个root用户：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo mysql</span><br></pre></td></tr></table></figure>
+
+<p>进入后，先创建用户，密码改为自己想要的就行，后面会用到：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">mysql&gt; ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;密码&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>想要立即生效，我们需要执行Flush</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">mysql&gt; FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+
+<p>我们在控制台输入exit，退出mysql，重新以root用户身份登录看看，是否正常。</p>
+<p>在控制台输入</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<p>成功登录后，我们需要给wordpress创建一个数据库，然后添加一个用户执行权限。</p>
+<p>为 wordpress 创建一个叫 wordpress 的数据库</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">mysql&gt; CREATE DATABASE wordpress;</span><br></pre></td></tr></table></figure>
+
+<p>因为我们数据库是8.0以上的版本，很多博客给的输入方式是针对于MySQL 5.7版本的，已经过时了，因此我们这里直接使用MySQL 8.0以上的语法就好。</p>
+<p>先创建用户：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">mysql&gt; create user &#x27;user&#x27;@&quot;localhost&quot; IDENTIFIED BY &#x27;密码&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>然后分别按下面的操作执行：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line"># 授权</span><br><span class="line">mysql&gt; grant all on wordpress.* to &quot;user&quot;@&quot;localhost&quot; with grant option;</span><br><span class="line"># 使配置生效。</span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line"># 退出MySQL。</span><br><span class="line">mysql&gt; exit;</span><br></pre></td></tr></table></figure>
+
+<p>这样子，数据库我们就设置好了</p>
+<h3 id="安装PHP和PHP的依赖以及Wordpress并修改文件目录权限"><a href="#安装PHP和PHP的依赖以及Wordpress并修改文件目录权限" class="headerlink" title="安装PHP和PHP的依赖以及Wordpress并修改文件目录权限"></a>安装PHP和PHP的依赖以及Wordpress并修改文件目录权限</h3><p>安装一下PHP和PHP的依赖</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo apt install php libapache2-mod-php php-mysql</span><br><span class="line"></span><br><span class="line">sudo apt install php-curl php-gd php-xml php-mbstring  php-xmlrpc php-zip php-soap php-intl</span><br></pre></td></tr></table></figure>
+
+<p>最后，我们安装一下WordPress就好</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">curl -O https://wordpress.org/latest.tar.gz</span><br><span class="line">tar xzvf latest.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>由于PHP默认访问 &#x2F;var&#x2F;www&#x2F;html&#x2F; 文件夹，所以我们需要把 wordpress 文件夹里的文件都复制到 &#x2F;var&#x2F;www&#x2F;html&#x2F; 文件夹</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo mv wordpress/* /var/www/html/</span><br></pre></td></tr></table></figure>
+
+<p>修改一下 &#x2F;var&#x2F;www&#x2F;html&#x2F; 目录权限：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo chmod -R 777 /var/www/html/</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>使用Apache服务的</strong>(我没用过)</p>
+<p>将apache指定到index.html</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo mv /var/www/html/index.html /var/www/html/index~.html</span><br></pre></td></tr></table></figure>
+
+<p>重启 Apache 服务：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo service apache2 restart</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>配置WordPress</strong></p>
+<p>重命名示例文件wp-config（<strong>此处的路径*&#x2F;root&#x2F;wordpress*对应你自己的存放路径</strong>）：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">mv /var/www/html/wp-config-sample.php /root/wordpress/wp-config.php</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件内容：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">vi /var/www/html/wp-config.php</span><br></pre></td></tr></table></figure>
+
+<p>修改的内容包括<strong>DB_NAME，DB_USER，DB_PASSWORD以及下面的唯一key</strong>，其中前三个是在第二步自己设置的内容，唯一key可以直接去它提供的网站上拷贝，网站地址就在中间那串注释里<a href="https://api.wordpress.org/secret-key/1.1/salt/">https://api.wordpress.org/secret-key/1.1/salt/</a> WordPress.org secret-key service，修改部分文件如下所示，key免费获取的，不用抄这的，其它没改的先不要动：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/////其它。。。</span><br><span class="line"></span><br><span class="line">// ** Database settings - You can get this info from your web host ** //</span><br><span class="line">/** The name of the database for WordPress */</span><br><span class="line">define( &#x27;DB_NAME&#x27;, &#x27;wordpress&#x27; );</span><br><span class="line"></span><br><span class="line">/** Database username */</span><br><span class="line">define( &#x27;DB_USER&#x27;, &#x27;root&#x27; );</span><br><span class="line"></span><br><span class="line">/** Database password */</span><br><span class="line">define( &#x27;DB_PASSWORD&#x27;, &#x27;123456@MyxLn&#x27; );</span><br><span class="line"></span><br><span class="line">/** Database hostname */</span><br><span class="line">define( &#x27;DB_HOST&#x27;, &#x27;localhost&#x27; );</span><br><span class="line"></span><br><span class="line">/** Database charset to use in creating database tables. */</span><br><span class="line">define( &#x27;DB_CHARSET&#x27;, &#x27;utf8&#x27; );</span><br><span class="line"></span><br><span class="line">/** The database collate type. Don&#x27;t change this if in doubt. */</span><br><span class="line">define( &#x27;DB_COLLATE&#x27;, &#x27;&#x27; );</span><br><span class="line"></span><br><span class="line">/** language settings **/</span><br><span class="line">define( &#x27;WPLANG&#x27; , &#x27;zh_CN&#x27; );</span><br><span class="line"></span><br><span class="line">/**#@+</span><br><span class="line"> * Authentication unique keys and salts.</span><br><span class="line"> *</span><br><span class="line"> * Change these to different unique phrases! You can generate these using</span><br><span class="line"> * the &#123;@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service&#125;.</span><br><span class="line"> *</span><br><span class="line"> * You can change these at any point in time to invalidate all existing cookies.</span><br><span class="line"> * This will force all users to have to log in again.</span><br><span class="line"> *</span><br><span class="line"> * @since 2.6.0</span><br><span class="line"> */</span><br><span class="line">define( &#x27;AUTH_KEY&#x27;,         &#x27;qonGde%itgR.OWGdE#VoOwbu61 a-LxsS_|TMOWb,:/.~QQq&lt;$GX[]S?X=[=*ThC&#x27; );</span><br><span class="line">define( &#x27;SECURE_AUTH_KEY&#x27;,  &#x27;V(cV-A6rw=EM,fSV2qM(&#123;4yUt|;&amp;tU$CFbj~-E[t1^%M.NM4#c^Ek0/0[L22axhg&#x27; );</span><br><span class="line">define( &#x27;LOGGED_IN_KEY&#x27;,    &#x27;r=d:&#123; m/&#125;(ake[x&lt;?P:U5KWFzfCdcq;#*ArxHz-o zjBf)oxmSC&#125;x,nO1 ]unvTi&#x27; );</span><br><span class="line">define( &#x27;NONCE_KEY&#x27;,        &#x27;H-_yA-^Kio&gt;yZiY(D0dB!^rql:w$Q,,6$caBdVQ:A#&lt;|zFv`ZJF7tYUZPBu&#125;YIj4&#x27; );</span><br><span class="line">define( &#x27;AUTH_SALT&#x27;,        &#x27;_E/w^4e.&gt;QD~^6W-L*guM,MqX,F-mew9+3S%7W1t,*NG?_E|9vg32MciS;-@SA.k&#x27; );</span><br><span class="line">define( &#x27;SECURE_AUTH_SALT&#x27;, &#x27;iZ-+lSi?`3^WnwLN&gt;~`7&amp;lV&#123;1Ki&lt;~z&lt;H6B*Dk5)BrR|hr;yxY4R7|=A&amp;2^tSvE3d&#x27; );</span><br><span class="line">define( &#x27;LOGGED_IN_SALT&#x27;,   &#x27;@*KH?)&gt;@M6+Y(4VpV%),bV9TLzi&#125;s^xMf~QcYqH- ,,zg&lt;(Y;77[&gt;Yg.47!E2wx8&#x27; );</span><br><span class="line">define( &#x27;NONCE_SALT&#x27;,       &#x27;e.O:`Xo`4J*H-QHp6joF9@4&amp;P yCzoeO+&gt;d3+wy[h#!Ob&amp;|BA?5EbOQl8uuz&#125;v&amp;r&#x27; );</span><br><span class="line"></span><br><span class="line">/////其它。。。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h3><p>现在，本地端的基本配置完成。wordpress所有文件都在<code>	/var/www/html/</code>目录下，目录结构大致如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── wp-admin</span><br><span class="line">│   ├── css</span><br><span class="line">│   ├── images</span><br><span class="line">│   ├── includes</span><br><span class="line">│   ├── js</span><br><span class="line">│   ├── maint</span><br><span class="line">│   ├── network</span><br><span class="line">│   └── user</span><br><span class="line">├── wp-content</span><br><span class="line">│   ├── languages</span><br><span class="line">│   ├── plugins</span><br><span class="line">│   ├── themes</span><br><span class="line">│   ├── uploads</span><br><span class="line">│   ├── wpvividbackups</span><br><span class="line">│   ├── wpvivid_staging</span><br><span class="line">│   └── wpvivid_uploads</span><br><span class="line">└── wp-includes</span><br><span class="line">    ├── assets</span><br><span class="line">    ├── block-patterns</span><br><span class="line">    ├── blocks</span><br><span class="line">    ├── block-supports</span><br><span class="line">    ├── certificates</span><br><span class="line">    ├── css</span><br><span class="line">    ├── customize</span><br><span class="line">    ├── fonts</span><br><span class="line">    ├── html-api</span><br><span class="line">    ├── ID3</span><br><span class="line">    ├── images</span><br><span class="line">    ├── IXR</span><br><span class="line">    ├── js</span><br><span class="line">    ├── php-compat</span><br><span class="line">    ├── PHPMailer</span><br><span class="line">    ├── pomo</span><br><span class="line">    ├── Requests</span><br><span class="line">    ├── rest-api</span><br><span class="line">    ├── SimplePie</span><br><span class="line">    ├── sitemaps</span><br><span class="line">    ├── sodium_compat</span><br><span class="line">    ├── style-engine</span><br><span class="line">    ├── Text</span><br><span class="line">    ├── theme-compat</span><br><span class="line">    └── widgets</span><br></pre></td></tr></table></figure>
+
+<p>建站主要关心的就是wp-content中的几个文件夹了，包括主题（theme）、插件（plugins）。语言languages文件夹要下载中文包（从官网上下的，压缩包里似乎是全套的wordpress文件，也就是上面展示的文件，他那个压缩包里的wp-content下的languages文件夹直接复制过来的）</p>
+<p>wpvividbackups则是wpvividbackups插件自动建立的。插件、主题的安装后面讲。</p>
+<h3 id="修改Nginx配置"><a href="#修改Nginx配置" class="headerlink" title="修改Nginx配置"></a>修改Nginx配置</h3><p>Nginx安装后，就可以访问你的ip地址或域名，看到一个nginx的提示页面了，好像是403.没安装时是直接提示无法访问。</p>
+<p>修改权限（这些文件都是root的，而Nginx默认是www-data用户来运行，所以没有权限写入root的文件）：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">chown -R www-data:www-data /var/www/html</span><br></pre></td></tr></table></figure>
+
+<p>可通过<code>whereis nginx</code>查看路径</p>
+<p>在<code>/etc/nginx</code>下游nginx的配置文件nginx.conf，一般不用直接动这里（有问题再看），里面配置了引用用户在<code>conf.d</code>和<code>sites-available</code>文件下的配置。</p>
+<p>此处更改<code>sites-available</code>文件夹下的default文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim default</span><br></pre></td></tr></table></figure>
+
+<p>我们需要做如下修改：</p>
+<ol>
+<li><p>root处路径改为<code>/var/www/html</code></p>
+</li>
+<li><p>在index处添加index.php作为我们的起始页面；</p>
+</li>
+<li><p>修改server_name来指向我们的域名或者是公网IP；</p>
+</li>
+<li><p>忽略那些以#开头的行。（原文：*For the actual PHP processing, we just need to uncomment a segment of the file that handles PHP requests by removing the pound symbols (#) from in front of each line. This will be the <code>location ~\.php$</code> location block, the included <code>fastcgi-php.conf</code> snippet, and the socket associated with <code>php-fpm</code>*）</p>
+</li>
+<li><p>用同样的方法忽略.htaccess文件。（原文：*We will also uncomment the location block dealing with <code>.htaccess</code> files using the same method. Nginx doesn’t process these files. If any of these files happen to find their way into the document root, they should not be served to visitors.*）</p>
+</li>
+<li><p>将server后两个location按下面取消部分需要的注释：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">location ~ \.php$ &#123;</span><br><span class="line">             include snippets/fastcgi-php.conf;</span><br><span class="line">     #</span><br><span class="line">     #       # With php-fpm (or other unix sockets):</span><br><span class="line">             fastcgi_pass unix:/run/php/php8.1-fpm.sock;</span><br><span class="line">     #       # With php-cgi (or other tcp sockets):</span><br><span class="line">     #       fastcgi_pass 127.0.0.1:9000;</span><br><span class="line">     &#125;</span><br><span class="line">   </span><br><span class="line">     # deny access to .htaccess files, if Apache&#x27;s document root</span><br><span class="line">     # concurs with nginx&#x27;s one</span><br><span class="line">     #</span><br><span class="line">     location ~ /\.ht &#123;</span><br><span class="line">             deny all;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>验证配置文件有没有错误：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+
+<p>如果看到如下提示OK则说明配置搞定：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br></pre></td></tr></table></figure>
+
+<p>重启Nginx：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">/etc/init.d/nginx restart</span><br></pre></td></tr></table></figure>
+
+<p>如果重启没用直接用<code>kill 进程id</code>杀死这个进程，再<code>sudo nginx</code>启动nginx</p>
+<p>使用如下查看进程id</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">netstat -nao|grep 80</span><br></pre></td></tr></table></figure>
+
+<p>一般nginx会使用80端口</p>
+<p><strong>最终</strong></p>
+<p>直接在浏览器输入ip或域名即可进入，会有引导配置。</p>
+<p>使用<code>http://ip或域名/wp-admin/</code>可登录控制面板。</p>
+<h2 id="插件、主题的安装"><a href="#插件、主题的安装" class="headerlink" title="插件、主题的安装"></a>插件、主题的安装</h2><p>方法都是类似的，</p>
+<p>方法一：使用ftp服务器，直接从wordpress控制面板里下、安装。要配置ftp，没试过。</p>
+<p>方法二：从官网下载插件或主题的安装包，上传到wp-content下对应的文件夹里。然后直接解压，在控制面版中即可直接看到。</p>
+<h2 id="查看当前网卡带宽实时占用"><a href="#查看当前网卡带宽实时占用" class="headerlink" title="查看当前网卡带宽实时占用"></a>查看当前网卡带宽实时占用</h2><p>安装：<code>sudo apt-get install ethstatus</code></p>
+<p>查看ADSL速度<code>sudo ethstatus -i eth0</code></p>
+<p>查看网卡速度<code>sudo ethstatus -i eth0</code></p>
+<p>同时能看实时发包情况</p>
+<p>网卡名则是<code>ifconfig</code></p>
+<p>按q退出查看界面。</p>
+<h2 id="tree命令展示指定深度文件夹"><a href="#tree命令展示指定深度文件夹" class="headerlink" title="tree命令展示指定深度文件夹"></a>tree命令展示指定深度文件夹</h2><p>安装</p>
+<p><code>sudo apt install tree</code></p>
+<p>使用</p>
+<p>直接使用，会显示指定文件夹下的所有文件：</p>
+<p><code>tree 路径</code> </p>
+<p>指定显示深度, 此处为3级：</p>
+<p><code>tree -L 3 路径</code>  </p>
+<p>只显示目录，不显示文件：</p>
+<p><code>tree -d -L 3 路径</code> </p>
+<h2 id="Wordpress好用的插件"><a href="#Wordpress好用的插件" class="headerlink" title="Wordpress好用的插件"></a>Wordpress好用的插件</h2><p>1、<strong>WPvivid Backup Plugin</strong>  自动备份插件</p>
+<p>2、<strong>WP Githuber MD</strong> 写Markdown使用的插件，似乎不太好用，不是很符合理想，将不能使用<code>[toc]</code>生成目录。</p>
+<p>3、<strong>WP Editor.md</strong> 同上。</p>
+<p>其它：Hello Dolly插件可有可无</p>
+<h2 id="存在的坑"><a href="#存在的坑" class="headerlink" title="存在的坑"></a>存在的坑</h2><p>暂时空着，后面再补。</p>
+]]></content>
+      <categories>
+        <category>个人博客站搭建</category>
+      </categories>
+      <tags>
+        <tag>Ubuntu</tag>
+        <tag>Wordpress</tag>
+        <tag>mySQL</tag>
+      </tags>
+  </entry>
+</search>
