@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="320" viewBox="0 0 320 320">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-1 {
+        mix-blend-mode: multiply;
+      }
+
+      .cls-2 {
+        fill: #333;
+        filter: url(#filter);
+      }
+
+      .cls-3 {
+        font-size: 144px;
+        fill: #ccc;
+        font-family: "Franklin Gothic Heavy";
+        text-transform: uppercase;
+      }
+    </style>
+    <filter id="filter" x="50" y="50" width="220" height="220" filterUnits="userSpaceOnUse">
+      <feGaussianBlur result="blur" stdDeviation="2" in="SourceAlpha"/>
+      <feColorMatrix result="color" values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0"/>
+      <feColorMatrix result="color-2" values="0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0"/>
+      <feColorMatrix result="color-3" values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0"/>
+      <feComponentTransfer result="comp" color-interpolation-filters="sRGB">
+        <feFuncR type="table" tableValues="0.2 0.175 0.15 0.125 0.1 0.075 0.05 0.025 0 0"/>
+        <feFuncG type="table" tableValues="0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2"/>
+        <feFuncB type="table" tableValues="0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2"/>
+      </feComponentTransfer>
+      <feComposite result="composite" operator="in" in2="SourceAlpha"/>
+      <feBlend result="blend" mode="screen" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <path id="background_choose2" data-name="background choose2" class="cls-1" d="M203.078,20a36,36,0,0,1,25.456,10.544l60.922,60.922A36,36,0,0,1,300,116.922v86.156a36,36,0,0,1-10.544,25.456l-60.922,60.922A36,36,0,0,1,203.078,300H116.922a36,36,0,0,1-25.456-10.544L30.544,228.534A36,36,0,0,1,20,203.078V116.922A36,36,0,0,1,30.544,91.466L91.466,30.544A36,36,0,0,1,116.922,20h86.156Z"/>
+  <path id="middle" class="cls-2" d="M193.966,50a28,28,0,0,1,19.8,8.2L261.8,106.235a28,28,0,0,1,8.2,19.8v67.932a28,28,0,0,1-8.2,19.8L213.765,261.8a28,28,0,0,1-19.8,8.2H126.034a28,28,0,0,1-19.8-8.2L58.2,213.765a28,28,0,0,1-8.2-19.8V126.034a28,28,0,0,1,8.2-19.8L106.235,58.2a28,28,0,0,1,19.8-8.2h67.932Z"/>
+  <text id="M" class="cls-3" transform="translate(84.262 219.962) scale(1.263 1.275)">M</text>
+</svg>
