@@ -4,7 +4,7 @@ function hexoChangeBanner() {
     console.log(folderName);
 
     var listPostUrl = [
-        "/" + folderName + "/" + "post-banner.png",
+      //  "/" + folderName + "/" + "post-banner.png",
         "/" + folderName + "/" + "post-banner.jpg",
     ];
 
@@ -16,13 +16,16 @@ function hexoChangeBanner() {
         if(nSuccessCount > 0){
             return;
         }
+	    console.log("myx fin url00 =" + strUrl);
         if(bSuccess) {
             nSuccessCount++;
-            document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
-        }
+           // document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+           document.getElementById("banner").src=strUrl; 
+	  }
         if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
             // 使用默认图
-            document.getElementById("id-header-inner").style.backgroundImage = "url(/images/default-background.jpg)";
+            //document.getElementById("id-header-inner").style.backgroundImage = "url(/images/default-background.jpg)";
+	    document.getElementById("id-post-banner").src = "/images/default-background.jpg";
         }
     }
 
