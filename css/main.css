@@ -340,7 +340,7 @@ td {
 .btn {
   background: var(--btn-default-bg);
   border: 2px solid var(--btn-default-border-color);
-  border-radius: 2px;
+  border-radius: 3px;
   color: var(--btn-default-color);
   display: inline-block;
   font-size: 0.875em;
@@ -2489,7 +2489,7 @@ mark.search-keyword {
 }
 header.header {
   background: var(--content-bg-color);
-  border-radius: initial;
+  border-radius: 20px;
   box-shadow: initial;
 }
 @media (max-width: 991px) {
@@ -2526,7 +2526,7 @@ header.header {
   }
 }
 .main-inner {
-  border-radius: initial;
+  border-radius: 20px;
   box-sizing: border-box;
   width: calc(100% - 252px);
 }
@@ -2667,7 +2667,7 @@ header.header {
 }
 .sidebar-inner {
   background: var(--content-bg-color);
-  border-radius: initial;
+  border-radius: 20px;
   box-shadow: initial;
   box-sizing: border-box;
   color: var(--text-color);
@@ -2753,4 +2753,15 @@ header.header {
   .pagination {
     margin-bottom: 10px;
   }
+}
+body {
+  background: url("/images/web-background.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: 50% 50%;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  -moz-background-size: cover;
+  -ms-background-size: cover;
 }
