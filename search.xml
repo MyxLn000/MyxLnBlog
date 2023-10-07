@@ -3,10 +3,7 @@
   <entry>
     <title>SSH的使用笔记</title>
     <url>/2023/10/03/SSH%E7%9A%84%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<p><img src="/images/default-background.jpg"></p>
-<span id="more"></span>
-
-<h1 id="SSH的使用笔记"><a href="#SSH的使用笔记" class="headerlink" title="SSH的使用笔记"></a>SSH的使用笔记</h1><h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><p>此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。</p>
+    <content><![CDATA[<h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><p>此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。</p>
 <p>此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。</p>
 <h2 id="SSH其他笔记"><a href="#SSH其他笔记" class="headerlink" title="SSH其他笔记"></a>SSH其他笔记</h2><p>ssh生成的文件一般在路径<code>~/.ssh</code>下，一般会生成三个文件：<code>id_rsa  id_rsa.pub  known_hosts</code></p>
 <p>id_rsa为私钥，id_rsa.pub为公钥， known_hosts为记录的连接，ssh会把你每个你访问过计算机的公钥(public key)都记录在~&#x2F;.ssh&#x2F;known_hosts。当下次访问相同计算机时，OpenSSH会核对公钥。如果公钥不同，OpenSSH会发出警告， 避免你受到DNS Hijack之类的攻击。（摘自他人的一些理解，后续会更行）</p>
@@ -101,8 +98,7 @@
   <entry>
     <title>Wordpress建站经验</title>
     <url>/2023/10/03/Wordpress%E5%BB%BA%E7%AB%99%E7%BB%8F%E9%AA%8C/</url>
-    <content><![CDATA[<h1 id="Wordpress建站经验"><a href="#Wordpress建站经验" class="headerlink" title="Wordpress建站经验"></a>Wordpress建站经验</h1><h2 id="WordPress配置流程"><a href="#WordPress配置流程" class="headerlink" title="WordPress配置流程"></a>WordPress配置流程</h2><p>大致为</p>
-<h3 id="安装MySQL并创建wordpress数据库，安装Nginx"><a href="#安装MySQL并创建wordpress数据库，安装Nginx" class="headerlink" title="安装MySQL并创建wordpress数据库，安装Nginx"></a>安装MySQL并创建wordpress数据库，安装Nginx</h3><p>（之前看一篇博客要安装Apache？存疑，后面用的是Nginx代理，似乎没用到Apache）</p>
+    <content><![CDATA[<h2 id="WordPress配置流程"><a href="#WordPress配置流程" class="headerlink" title="WordPress配置流程"></a>WordPress配置流程</h2><h3 id="安装MySQL并创建wordpress数据库，安装Nginx"><a href="#安装MySQL并创建wordpress数据库，安装Nginx" class="headerlink" title="安装MySQL并创建wordpress数据库，安装Nginx"></a>安装MySQL并创建wordpress数据库，安装Nginx</h3><p>（之前看一篇博客要安装Apache？存疑，后面用的是Nginx代理，似乎没用到Apache）</p>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install apache2</span><br><span class="line">sudo apt install mysql-server</span><br></pre></td></tr></table></figure>
 
 <p>Apache好像可以不用安装？存疑，未尝试。</p>

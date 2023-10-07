@@ -243,7 +243,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-05 22:40:24" itemprop="dateModified" datetime="2023-10-05T22:40:24+08:00">2023-10-05</time>
+      <time title="修改时间：2023-10-07 19:11:34" itemprop="dateModified" datetime="2023-10-07T19:11:34+08:00">2023-10-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,8 +265,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="Wordpress建站经验"><a href="#Wordpress建站经验" class="headerlink" title="Wordpress建站经验"></a>Wordpress建站经验</h1><h2 id="WordPress配置流程"><a href="#WordPress配置流程" class="headerlink" title="WordPress配置流程"></a>WordPress配置流程</h2><p>大致为</p>
-<h3 id="安装MySQL并创建wordpress数据库，安装Nginx"><a href="#安装MySQL并创建wordpress数据库，安装Nginx" class="headerlink" title="安装MySQL并创建wordpress数据库，安装Nginx"></a>安装MySQL并创建wordpress数据库，安装Nginx</h3><p>（之前看一篇博客要安装Apache？存疑，后面用的是Nginx代理，似乎没用到Apache）</p>
+          <h2 id="WordPress配置流程"><a href="#WordPress配置流程" class="headerlink" title="WordPress配置流程"></a>WordPress配置流程</h2><h3 id="安装MySQL并创建wordpress数据库，安装Nginx"><a href="#安装MySQL并创建wordpress数据库，安装Nginx" class="headerlink" title="安装MySQL并创建wordpress数据库，安装Nginx"></a>安装MySQL并创建wordpress数据库，安装Nginx</h3><p>（之前看一篇博客要安装Apache？存疑，后面用的是Nginx代理，似乎没用到Apache）</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install apache2</span><br><span class="line">sudo apt install mysql-server</span><br></pre></td></tr></table></figure>
 
 <p>Apache好像可以不用安装？存疑，未尝试。</p>
@@ -460,7 +459,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-06 03:37:07" itemprop="dateModified" datetime="2023-10-06T03:37:07+08:00">2023-10-06</time>
+      <time title="修改时间：2023-10-07 19:11:09" itemprop="dateModified" datetime="2023-10-07T19:11:09+08:00">2023-10-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -482,15 +481,90 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p><img src="/images/default-background.jpg"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/10/03/SSH%E7%9A%84%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="一些说明"><a href="#一些说明" class="headerlink" title="一些说明"></a>一些说明</h2><p>此笔记中使用的ssh环境默认是基于是Ubuntu和Windows的。其他的未试验过，暂不知晓。</p>
+<p>此笔记的ssh使用时基于本人在学习使用中遇到的问题给出的一些解决方案。</p>
+<h2 id="SSH其他笔记"><a href="#SSH其他笔记" class="headerlink" title="SSH其他笔记"></a>SSH其他笔记</h2><p>ssh生成的文件一般在路径<code>~/.ssh</code>下，一般会生成三个文件：<code>id_rsa  id_rsa.pub  known_hosts</code></p>
+<p>id_rsa为私钥，id_rsa.pub为公钥， known_hosts为记录的连接，ssh会把你每个你访问过计算机的公钥(public key)都记录在~&#x2F;.ssh&#x2F;known_hosts。当下次访问相同计算机时，OpenSSH会核对公钥。如果公钥不同，OpenSSH会发出警告， 避免你受到DNS Hijack之类的攻击。（摘自他人的一些理解，后续会更行）</p>
+<p>其他的文件还有<code>config</code>：</p>
+<p>开始可能没有config文件，我们需要自己新建一个config文件。在使用ssh连接服务器时，经常要输入一些不同的主机地址和密码，使用config文件可以很好的解决这个问题，也就是说我们能够通过<strong>config文件能够实现免密登录</strong>。</p>
+<p><strong>config配置内容：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host：服务名【可以随意取】</span><br><span class="line">HostName：linux服务器ip/主机名/域名</span><br><span class="line">User：用户名</span><br><span class="line">Port：端口号默认为22</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong><br>（1）若HostName中我们输入的是主机名和域名，那我们可能需要在&#x2F;etc&#x2F;hosts文件下配置IP和主机名或域名的映射。<br>（2）若我们在对应服务器中的authorized_keys文件都配置了密钥，那我们这里也不用配置User和Port两个配置项。</p>
+<h2 id="Windows上使用ssh访问本机VMware中的Ubuntu虚拟机"><a href="#Windows上使用ssh访问本机VMware中的Ubuntu虚拟机" class="headerlink" title="Windows上使用ssh访问本机VMware中的Ubuntu虚拟机"></a>Windows上使用ssh访问本机VMware中的Ubuntu虚拟机</h2><p>首先检查一下Ubuntu虚拟机上是否安装了ssh服务。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install openssh-server</span><br></pre></td></tr></table></figure>
+
+<p>启动ssh服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service ssh start</span><br></pre></td></tr></table></figure>
+
+<p>重启ssh服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service ssh restart</span><br></pre></td></tr></table></figure>
+
+<p>检查ssh服务是否在运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status ssh</span><br></pre></td></tr></table></figure>
+
+<p>如果有UFW防火墙，则打开ssh端口(未实验过)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ufw allow ssh</span><br></pre></td></tr></table></figure>
+
+<p>打开VMware中的 <code>虚拟机-》虚拟机设置 </code>或者<code>CTRL+D</code>。选择网络适配器，此处用的是</p>
+<p>通过Windows上的终端</p>
+<p>此处用的是<a target="_blank" rel="noopener" href="https://mobaxterm.mobatek.net/">MobaXterm</a></p>
+<p>使用ssh直接连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh 用户名username@IP地址xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
+
+<p>遇到<code>Are you sure you want to continue connecting (yes/no/[fingerprint])?</code></p>
+<p>直接输入<code>yes</code>即可。</p>
+<p><strong>其他相关命令</strong></p>
+<p>停止ssh服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo stop ssh</span><br></pre></td></tr></table></figure>
+
+<p>将ssh的客户端以及服务端卸载：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get remove openssh-client #卸载ssh客户端apt-get remove openssh-server #卸载ssh服务端</span><br></pre></td></tr></table></figure>
+
+<p>安装ssh服务端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install openssh-server </span><br></pre></td></tr></table></figure>
+
+<p> 安装ssh客户端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install openssh-client</span><br></pre></td></tr></table></figure>
+
+<h2 id="ssh生成密钥与删除密钥"><a href="#ssh生成密钥与删除密钥" class="headerlink" title="ssh生成密钥与删除密钥"></a>ssh生成密钥与删除密钥</h2><p><strong>检查已有的SSH KEY</strong></p>
+<p>首先，检查本地主机是否已经存在ssh key</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
+
+<p>看是否存在 id_rsa 和 id_rsa.pub文件，如果存在，说明已经有SSH Key，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">myx@myx-virtual-machine:~/.ssh$ ls</span><br><span class="line">id_rsa  id_rsa.pub  known_hosts</span><br></pre></td></tr></table></figure>
+
+<p>其中id_rsa为私钥，id_rsa.pub为公钥， known_hosts为记录的连接</p>
+<p>或者</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -al ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>会直接给出当前用户的SSH密钥列表。</p>
+<p>__生成ssh key __（存在时则直接跳过生成ssh key）<br>如果不存在ssh key，使用如下命令生成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;xxx@xxx.com&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行后一直回车即可，可按需求输入密码。</p>
+<p>生成完以后再用第二步命令，查看ssh key</p>
+<p>__获取ssh key公钥内容__（即id_rsa.pub）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">cat id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<p>之后就可以将公钥交给github之类的使用即可。</p>
+<p><strong>删除密钥</strong></p>
+<p>使用如下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -al ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>会直接给出当前用户的SSH密钥列表。</p>
+<p>找到要删除的密钥文件，使用以下命令删除：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm ~/.ssh/密钥文件名</span><br></pre></td></tr></table></figure>
+
+<p>想要删除所有的ssh密钥，包括已经添加到ssh代理中的密钥(谨慎删除！)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf ~/.ssh</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
       
     </div>
 
