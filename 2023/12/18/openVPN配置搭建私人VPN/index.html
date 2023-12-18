@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon/favicon-320x320-m-color.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon/favicon-64x64-m.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon/favicon-32x32-m.png">
+  <link rel="mask-icon" href="/images/icon/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"myxln.love","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="openVPN配置搭建私人VPN for Windows  首先说明：不要在未报备的情况下，使用VPN跨国通联，这将是违法行为  解决的问题：使用openVPN通过ipv6实现私人VPN设置，实现远程联通到服务端的本地局域网（实际上还可以使用桥接模式课实现通过服务器和组织已有的大型局域网相连接，这里没有使用）。实现了sunshine的视频串流，用于远程操控电脑。 其他平替方案还有：Openwrt、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openVPN配置搭建私人VPN">
+<meta property="og:url" content="https://myxln.love/2023/12/18/openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN/index.html">
+<meta property="og:site_name" content="MyxLnBlog">
+<meta property="og:description" content="openVPN配置搭建私人VPN for Windows  首先说明：不要在未报备的情况下，使用VPN跨国通联，这将是违法行为  解决的问题：使用openVPN通过ipv6实现私人VPN设置，实现远程联通到服务端的本地局域网（实际上还可以使用桥接模式课实现通过服务器和组织已有的大型局域网相连接，这里没有使用）。实现了sunshine的视频串流，用于远程操控电脑。 其他平替方案还有：Openwrt、">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-18T09:12:39.000Z">
+<meta property="article:modified_time" content="2023-12-18T10:28:52.684Z">
+<meta property="article:author" content="MyxLn000">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="openVPN">
+<meta property="article:tag" content="Easy-RSA">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://myxln.love/2023/12/18/openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://myxln.love/2023/12/18/openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN/","path":"2023/12/18/openVPN配置搭建私人VPN/","title":"openVPN配置搭建私人VPN"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>openVPN配置搭建私人VPN | MyxLnBlog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">MyxLnBlog</p>
+      <i class="logo-line"></i>
+    </a>
+      <img class="custom-logo-image" src="/images/icon/web-head.png" alt="MyxLnBlog">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN-for-Windows"><span class="nav-number">1.</span> <span class="nav-text">openVPN配置搭建私人VPN for Windows</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EASY-RSA%E9%85%8D%E7%BD%AE%E8%AF%81%E4%B9%A6"><span class="nav-number">1.1.</span> <span class="nav-text">EASY-RSA配置证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">1.2.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">1.2.2.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android%E7%AB%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text">Android端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">其他问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84BUG"><span class="nav-number">1.4.</span> <span class="nav-text">自己使用时遇到的BUG</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MyxLn000"
+      src="/images/user-head.jpg">
+  <p class="site-author-name" itemprop="name">MyxLn000</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/MyxLn000/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MyxLn000&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://tobios.eu.org/" title="https:&#x2F;&#x2F;tobios.eu.org&#x2F;" rel="noopener" target="_blank">tobios` blog</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+      <div>
+	<img id="banner" src="">
+
+	      <!--	<img id="banner" src="/./images/default-background.jpg"> -->
+      </div>
+     
+    <!-- 改变css样式 -->
+        <script type="text/javascript" src="/js/src/bg-beautifier.js"></script>
+        <script>hexoChangeBanner();</script>
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://myxln.love/2023/12/18/openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/user-head.jpg">
+      <meta itemprop="name" content="MyxLn000">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyxLnBlog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="openVPN配置搭建私人VPN | MyxLnBlog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openVPN配置搭建私人VPN
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-12-18 17:12:39 / 修改时间：18:28:52" itemprop="dateCreated datePublished" datetime="2023-12-18T17:12:39+08:00">2023-12-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/OpenVPN/" itemprop="url" rel="index"><span itemprop="name">OpenVPN</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="openVPN配置搭建私人VPN-for-Windows"><a href="#openVPN配置搭建私人VPN-for-Windows" class="headerlink" title="openVPN配置搭建私人VPN for Windows"></a>openVPN配置搭建私人VPN for Windows</h1><blockquote>
+<p> <strong>首先说明：不要在未报备的情况下，使用VPN跨国通联，这将是违法行为</strong></p>
+</blockquote>
+<p><strong>解决的问题：</strong>使用openVPN通过ipv6实现私人VPN设置，实现远程联通到服务端的本地局域网（实际上还可以使用桥接模式课实现通过服务器和组织已有的大型局域网相连接，这里没有使用）。实现了sunshine的视频串流，用于远程操控电脑。</p>
+<p>其他平替方案还有：Openwrt、zerotier，或者直接使用windows的wsl。</p>
+<p><strong>openVPN开源项目</strong></p>
+<p>openVPN的gitHub开源<a target="_blank" rel="noopener" href="https://github.com/OpenVPN/openvpn/">OpenVPN&#x2F;openvpn</a>，openVPN官网<a target="_blank" rel="noopener" href="https://openvpn.net/">openvpn.net</a></p>
+<p>从<a target="_blank" rel="noopener" href="https://openvpn.net/community-downloads/">openvpn.net</a>安装openVPN，注意windows端版本。</p>
+<p>我这里是在Windows10环境下，安装的是<code>OpenVPN-2.6.8-I001-amd64.msi</code>。</p>
+<p>双击跟随引导完成安装。</p>
+<p>安卓端需要google的服务框架，可以从Google play下载，或者使用下面的连接安装</p>
+<p>Android:<a target="_blank" rel="noopener" href="https://cn.apkshki.com/app/openvpn-connect">OpenVPN Connect</a></p>
+<p><strong>注：</strong>服务端和客户端程序是同一个，区别是配置文件的不同。</p>
+<h2 id="EASY-RSA配置证书"><a href="#EASY-RSA配置证书" class="headerlink" title="EASY-RSA配置证书"></a>EASY-RSA配置证书</h2><p>从openVPN的GitHub上安装<a target="_blank" rel="noopener" href="https://github.com/OpenVPN/easy-rsa">Easy-RSA</a>的release版本，这里用的是目前最新版V3.1.7</p>
+<blockquote>
+<p>如想不知道RSA是干嘛的，请自行搜索 ”TLS“</p>
+</blockquote>
+<p>将文件下载好后解压。文件夹内部：</p>
+<p>主要使用的是EasyRSA目录下的<code>EasyRSA-Start.bat</code>脚本。通过该脚本提供的<code>EasyRSA Shell</code>进行CA root的生成，证书等大部分操作。</p>
+<p>参考文献在EasyRSA目录下的README.quickstart.html文件，包含一些基本的操作指令。</p>
+<p>也可以在EasyRSA Shell下使用<code>./easyrsa -h</code>获得帮助。</p>
+<p><strong>操作开始：</strong></p>
+<blockquote>
+<p>可以将CA和server、client做在一起，并无影响，此处只是为了尽量规范化的将其分开</p>
+<p>做在一起则不需要重复init-pki和配置，在同一个RSA Shell中完成操作即可</p>
+</blockquote>
+<p><strong>CA证书签发端：</strong></p>
+<p>创建一个CA文件夹，在这个文件夹下：</p>
+<p>将EasyRSA压缩包的文件解压到此，</p>
+<p><strong>var</strong>参数配置。这些参数是一些基本的信息变量。服务端和客户端的var内容一致不知道会不会有问题。</p>
+<p>将文件夹下的var.example复制一份并去除掉后缀，用记事本打开，根据需求修改参数。看不懂的话，大部分参数保持默认即可，下翻找到如下信息，修改成对应的就行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#set_var EASYRSA_REQ_COUNTRY	&quot;US&quot;	#国家</span><br><span class="line">#set_var EASYRSA_REQ_PROVINCE	&quot;California&quot;	#地区、省</span><br><span class="line">#set_var EASYRSA_REQ_CITY	&quot;San Francisco&quot;	#城市</span><br><span class="line">#set_var EASYRSA_REQ_ORG	&quot;Copyleft Certificate Co&quot;	#公司</span><br><span class="line">#set_var EASYRSA_REQ_EMAIL	&quot;me@example.net&quot;	#邮箱</span><br><span class="line">#set_var EASYRSA_REQ_OU		&quot;My Organizational Unit&quot;	#公司单位</span><br></pre></td></tr></table></figure>
+
+<p>初始化pki：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa init-pki</span><br></pre></td></tr></table></figure>
+
+<p>构建CA根证书：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa build-ca</span><br></pre></td></tr></table></figure>
+
+<p>回车后会要求设置密码，用于后面CA进行签名</p>
+<p>生成证书撤销列表（CRL）密钥：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa gen-crl</span><br></pre></td></tr></table></figure>
+
+<p>之后想要删除某个客户端证书，可以通过如下命令撤销证书：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa revoke &lt;name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>server端：</strong></p>
+<p>创建一个server文件夹：</p>
+<p>将EasyRSA压缩包的文件解压到此，</p>
+<p>重复上面的init操作。</p>
+<p>初始化pki：（如果和server端在一起就不用再初始化，初始化会清空<code>\pki</code>文件夹到默认值，会删除里面已存在的证书）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa init-pki</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成申请</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa gen-req &lt;Server&gt; nopass</span><br></pre></td></tr></table></figure>
+
+<p>这里是生成了一个名为Server的实体，也就是服务端的公钥和私钥，nopass后缀是指定不用密码加密私钥，需要加密则删去该后缀。</p>
+<p>回车后会要求设置密码等操作，直接回车会使用默认值。</p>
+<p><strong>导入公钥（如果是同一文件夹下则不需要导入）</strong></p>
+<p>生成完成后会给出公钥server.req和私钥server.key的文件位置。</p>
+<p>复制证书：（此处如果server和CA是同一个，就直接进行CA签署即可）</p>
+<p>生成好了后，再CA文件夹下创建一个<code>/tempPKI/tempReqs/</code>目录，将server公钥server.req复制到CA文件夹下的<code>/tempPKI/tempReqs/</code>目录。（在Windows目录环境下老是有些奇怪的问题，这里就干脆将文件直接复制过来了，当然，也可以直接使用req生成时给出的路径）</p>
+<p>再使用CA的RSA shell：</p>
+<p>将req导入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa import-req /tempPKI/tempReqs/server.req &lt;servername&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>签署：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa sign-req server &lt;servername&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此步骤将会使用CA的私钥进行签署，需要之前设置的CA私钥密码。</p>
+<p>创建Diffie-Hellman，此步骤只用于服务端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa gen-dh</span><br></pre></td></tr></table></figure>
+
+<p><strong>client端：</strong></p>
+<p>创建一个client文件夹：</p>
+<p>后续与server端类似。</p>
+<blockquote>
+<p>参考文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/cx776474961/article/details/88775745">Linux easy-rsa制作证书_.&#x2F;easyrsa sign server server-CSDN博客</a></p>
+</blockquote>
+<p><strong>结果</strong></p>
+<p>CA端：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-/pki/</span><br><span class="line">ca.crt</span><br><span class="line">-/pki/issued/</span><br><span class="line">client.crt</span><br><span class="line">server.crt</span><br><span class="line">-/pki/private/</span><br><span class="line">ca.key</span><br><span class="line">dh.pem</span><br><span class="line">crl.pem</span><br></pre></td></tr></table></figure>
+
+<p>server:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-/pki/</span><br><span class="line">ca.crt</span><br><span class="line">-/pki/issued/</span><br><span class="line">server.crt</span><br><span class="line">-/pki/private/</span><br><span class="line">server.key</span><br></pre></td></tr></table></figure>
+
+<p>client:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-/pki/</span><br><span class="line">ca.crt</span><br><span class="line">-/pki/issued/</span><br><span class="line">client.crt</span><br><span class="line">-/pki/private/</span><br><span class="line">client.key</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成TLS认证密钥</strong></p>
+<p>到openVPN的安装目录下</p>
+<p>找到&#x2F;bin文件夹，在此目录下打开cmd命令窗口（不能直接打开就用win+r输入cmd打开，然后cd到此目录下</p>
+<blockquote>
+<p>如果C盘Program Files里可能因为权限问题无法直接写入</p>
+<p>然后将此文件创建到D盘根目录或者rsa的pki&#x2F;private文件夹下保存</p>
+</blockquote>
+<p>写入<code>ta.key</code>文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\openvpn.exe --genkey --secret D:\ta.key</span><br></pre></td></tr></table></figure>
+
+<p><strong>复制文件</strong></p>
+<p>将这一系列生成好的配置复制到openVPN中：</p>
+<p>复制生成好的ca证书，ta.key和server端证书及密钥到openvpn的server或client的config文件夹里</p>
+<p>server端config需要的文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ca.crt</span><br><span class="line">ta.key</span><br><span class="line">server.key</span><br><span class="line">server.crt</span><br><span class="line">dh.pem</span><br><span class="line">crl.pem</span><br></pre></td></tr></table></figure>
+
+<p>client端config需要的文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ca.crt</span><br><span class="line">ta.key</span><br><span class="line">client.key</span><br><span class="line">client.crt</span><br><span class="line">dh.pem</span><br><span class="line">crl.pem</span><br></pre></td></tr></table></figure>
+
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>openVPN的客户端和服务端程序一致，区别是配置文件不同，<code>server.ovpn</code>为服务端，<code>client.ovpn</code>为客户端。</p>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><p>从<a target="_blank" rel="noopener" href="https://github.com/OpenVPN/openvpn/blob/master/sample/sample-config-files/server.conf">openvpn</a>上下载server端配置文件<code>server.conf</code>,或者直接在安装目录下（可以通过任务管理器查找到）的sample-config里找到，将文件复制到<code>C:\Users\&lt;usr&gt;\OpenVPN\config\</code>目录下,并重命名为<code>server.ovpn</code>。</p>
+<p><strong>配置server.ovpn</strong></p>
+<p>用记事本打开：</p>
+<blockquote>
+<p>注意：此文件中#和；都视为注释</p>
+</blockquote>
+<p>修改以下选项：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">port 1194 #选用1194端口为vpn所在端口</span><br><span class="line">proto udp #使用udp</span><br><span class="line">dev tun #使用tun</span><br><span class="line">dev-node &quot;OpenVPN TAP-Windows6&quot; #设置网络节点，这里输入windows电脑的网络适配器名称，位置在控制面板》网络和internet》网络连接，其中的OpenVPN TAP-Windows6是在安装的时候，msi程序自动添加的，一个适配器只能支持一个server，名字要用引号括起来。</span><br><span class="line">ca ca.crt</span><br><span class="line">cert server.crt</span><br><span class="line">key server.key  </span><br><span class="line">dh dh.pem</span><br><span class="line">#这里将之前所说的server端需要的几个配置文件全复制到与.ovpn文件相同的目录下，这里改成对应的名字</span><br><span class="line">topology subnet #使用subnet组网</span><br><span class="line">server 192.168.123.0 255.255.255.0 #设定使用的网段，在cmd中使用ipconfig查看已被使用的网段，设置一个没有被使用的网段，服务器将使用xxx.xxx.xxx.1 其他设备按顺序获得ip</span><br><span class="line">ifconfig-pool-persist ipp.txt #记录曾经登录过的客户端与对应ip</span><br><span class="line">push &quot;route 192.168.123.0 255.255.255.0&quot; #push route给client端，注意此处添加的路由将会把除server的ip以外的其他网段加入vpn访问的目标。</span><br><span class="line">client-to-client #打开客户端之间的通信</span><br><span class="line">keepalive 10 120</span><br><span class="line">tls-auth ta.key 0 #server端后缀为0，此处ta.key是之前生成的。</span><br><span class="line">cipher AES-256-CBC #不用改</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">status openvpn-status.log #ip使用记录日志</span><br><span class="line">verb 3 #不用改</span><br><span class="line">explicit-exit-notify 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>开放端口：</strong></p>
+<p>打开控制面板，找到防火墙》高级设置，新建入站规则，选择端口，开放UDP，指定端口1194，命名方便辨识即可。</p>
+<p><strong>共享Internet连接：</strong></p>
+<p>通过此步骤将vpn接入到你要广播的IP上。</p>
+<p>此处我要将vpn部署在网络适配器“以太网 3”上，使用其ipv6进行接入公网。</p>
+<p>在”控制面板》网络和internet》网络连接“中找到“以太网 3”，右击》“属性”》”共享“，勾选”允许其他网络用户通过此计算机的Internet连接来连接“，在下面选项选择之前.ovpn配置中指定的网络适配器”OpenVPN TAP-Windows6” ,确定。(不开启这一步，会导致远程电脑TLS握手超时失败)</p>
+<p><strong>启动VPN server</strong></p>
+<p>在任务栏右侧找到openVPN GUI，右键》连接即可启动。如果有报错说明存在地方没配好，查看日志了解详细信息即可。</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p><strong>Windows</strong></p>
+<p>使用相同的安装程序安装好后，将之前生成的证书等文件复制到<code>C:\Users\&lt;usr&gt;\OpenVPN\config\</code>目录下，并从openVPN的安装目录的sample-config里找到client.conf改为client.ovpn。</p>
+<p><strong>注意：</strong>不同设备使用vpn要使用不同的证书，再生成几个就行。</p>
+<p>修改如下文件内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">client #标识为客户端</span><br><span class="line">dev tun #使用tun，这里要和服务端一致</span><br><span class="line">#不要开启dev-node</span><br><span class="line">proto udp #这里要和服务端一致</span><br><span class="line">remote &lt;yourhostname or ip address&gt; 1194 #端口与服务端一致，可以填ip或hostname，最终ip指向的是前面共享的那个网络适配器，我这里是&quot;以太网3&quot;,会自动检测是ipv4或者ipv6,可以用多个remote,程序会自动按顺序选择，如果开启了remote-random选项（即取消注释），则随机选择</span><br><span class="line">resolv-retry infinite #无限次重连尝试</span><br><span class="line">nobind</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">mute-replay-warnings</span><br><span class="line">ca ca.crt</span><br><span class="line">cert client.crt</span><br><span class="line">key client.key</span><br><span class="line">remote-cert-tls server</span><br><span class="line">tls-auth ta.key 1 #client端后缀为1，此处ta.key是之前生成的。</span><br><span class="line">cipher AES-256-CBC</span><br><span class="line">verb 3</span><br></pre></td></tr></table></figure>
+
+<p>如果不想每次配置都要复制ca.crt等一堆证书，可以把他们合成一个文件，在client.ovpn文件结尾追加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;ca&gt;</span><br><span class="line">这里放入你的ca.crt文件内容</span><br><span class="line">&lt;/ca&gt;</span><br><span class="line"></span><br><span class="line">&lt;cert&gt;</span><br><span class="line">这里放入你的client.crt文件内容</span><br><span class="line">&lt;/cert&gt;</span><br><span class="line"></span><br><span class="line">&lt;key&gt;</span><br><span class="line">这里放入你的client.key文件内容</span><br><span class="line">&lt;/key&gt;</span><br><span class="line">key-direction 1</span><br><span class="line">&lt;tls-auth&gt;</span><br><span class="line">这里放入你的ta.key文件内容</span><br><span class="line">&lt;/tls-auth&gt;</span><br></pre></td></tr></table></figure>
+
+<p>同时删除前面的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ca ca.crt</span><br><span class="line">cert client.crt</span><br><span class="line">key client.key</span><br><span class="line">tls-auth ta.key 1 </span><br></pre></td></tr></table></figure>
+
+<p>然后就可以在config文件夹中只放入client.ovpn即可。</p>
+<p>（注意，此方法不适用于Android客户端）</p>
+<p>任务管理器右侧选，右键择连接。</p>
+<h3 id="Android端"><a href="#Android端" class="headerlink" title="Android端"></a>Android端</h3><p>需要下载openVPN app。</p>
+<p>我这里用的是安卓端的3.3.4版本。</p>
+<p>配置文件与电脑端一致，但需要把配置文件和证书文件分开：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ca.crt</span><br><span class="line">client.crt</span><br><span class="line">client.key</span><br><span class="line">ta.key</span><br><span class="line">client.ovpn</span><br></pre></td></tr></table></figure>
+
+<p>进入软件，点击加号，选择Upload File，</p>
+<p>同时选择这几个文件即可（用Android自带的文件管理可以选择多个文件同时导入，左上角选择）。</p>
+<p>点击连接。</p>
+<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><p>有多个网络连接server时需要修改好路由表，保证vpn的路由跃点数最小。</p>
+<p>提示有Adapter未启用，或者xxx未启用，在服务中开启即可。最好设置其自动启动自动重启。</p>
+<p><strong>如何查找需要访问的目标内网网页的ip：</strong></p>
+<p>1、在内网中直接访问目标网页，获取其域名或者直接有ip</p>
+<p>2、通过<code>ping -4 &lt;hostname&gt;</code>获取其ipv4的IP地址</p>
+<p>3、填入对应的route，重启服务器即可更新配置。</p>
+<h2 id="自己使用时遇到的BUG"><a href="#自己使用时遇到的BUG" class="headerlink" title="自己使用时遇到的BUG"></a>自己使用时遇到的BUG</h2><p><strong>1、能连上vpn，但推送的路由失效，server和client无法ping通</strong></p>
+<p>检查下VPN所在的网卡ip，我的网卡老是被奇怪的设置手动固定IP：192.168.137.1，导致路由出错</p>
+<p><strong>2、连不上VPN</strong></p>
+<p>可能IP发生了变化，稍等一会即可。如果恢复不了，只能通过其他办法连接、线下修复或者期待奇迹出现。</p>
+<blockquote>
+<p>我遇到过的情况：</p>
+<p>ip掉了（<strong>被上级路由ban了，上级路由寄了，或者网卡出问题没能DHCP到ip、ipv6有ip却ping不通任何</strong>（这个可太难了，没找到原因，反复重装驱动、卸载安装、调试跟踪路由都没有用，还会在莫名奇妙好了一会后再次断连，发现没有自动获取到ipv6的dns，关闭ipv4协议后有概率使ipv6复活，有时候还会在有ipv6地址和ipv6的dns服务器地址时，ping不通dns，tracert报错1231））</p>
+<p>、服务器ip被clash之类的代理软件代理掉了、网卡的共享莫名奇妙掉了</p>
+</blockquote>
+<p>注意：外置网卡，特别是外置网卡上还有附带usb的，要设置设备的省电策略，免得被自动关闭。</p>
+<p><strong>参考连接：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://openvpn.net/community-resources/how-to/#intended-audience">操作指南：设置和配置 OpenVPN 客户端&#x2F;服务器 VPN |OpenVPN的</a></p>
+<p>[[笔记]Windows使用OpenVpn构建虚拟局域网_windows 搭建vpn-CSDN博客](<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq1113673178/article/details/130488876?ops_request_misc=%7B%22request_id%22:%22170040623616800213098785%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=170040623616800213098785&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-130488876-null-null.142%5Ev96%5Epc_search_result_base7&utm_term=openvpn">https://blog.csdn.net/qq1113673178/article/details/130488876?ops_request_misc=%7B%22request%5Fid%22%3A%22170040623616800213098785%22%2C%22scm%22%3A%2220140713.130102334..%22%7D&amp;request_id=170040623616800213098785&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-130488876-null-null.142^v96^pc_search_result_base7&amp;utm_term=openvpn</a> windows&amp;spm&#x3D;1018.2226.3001.4187)</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/199176752">openvpn搭建与使用 - 知乎 (zhihu.com)</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="MyxLn000 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>MyxLn000
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://myxln.love/2023/12/18/openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN/" title="openVPN配置搭建私人VPN">https://myxln.love/2023/12/18/openVPN配置搭建私人VPN/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Windows/" rel="tag"># Windows</a>
+              <a href="/tags/openVPN/" rel="tag"># openVPN</a>
+              <a href="/tags/Easy-RSA/" rel="tag"># Easy-RSA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/03/Wordpress%E5%BB%BA%E7%AB%99%E7%BB%8F%E9%AA%8C/" rel="prev" title="Wordpress建站经验">
+                  <i class="fa fa-angle-left"></i> Wordpress建站经验
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/18/%E5%AE%B6%E5%BA%AD%E7%89%88Windows%E6%9C%AC%E5%9C%B0%E7%BB%84%E7%AD%96%E7%95%A5%E7%BC%96%E8%BE%91%EF%BC%88gpedit.msc%EF%BC%89%E4%B8%8D%E5%AD%98%E5%9C%A8%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" rel="next" title="家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法">
+                  家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">MyxLn000</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("10/1/2023 10:00:00");
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒.";
+    }
+setInterval("createtime()",250);
+</script>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+  
+  <script>
+   // document.oncontextmenu = function(){ return false; };
+
+   // document.onselectstart = function(){ return false; };
+
+    document.oncut = function(){ return false; };
+  </script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"MyxLn000","repo":"MyxLnBlog","client_id":"856cf8b47e82f91e7188","client_secret":"8bdd92db62abbf743bcb4271fb3826bfcc84f5bd","admin_user":"MyxLn000","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"01125d85c2167fe46ce6f1f4b1042ed8"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

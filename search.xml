@@ -240,4 +240,384 @@
         <tag>mySQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>NAT64、DNS64实现轻量级ipv6访问ipv4</title>
+    <url>/2023/12/18/NAT64%E3%80%81DNS64%E5%AE%9E%E7%8E%B0%E8%BD%BB%E9%87%8F%E7%BA%A7ipv6%E8%AE%BF%E9%97%AEipv4/</url>
+    <content><![CDATA[<h1 id="NAT64、DNS64实现轻量级ipv6访问ipv4"><a href="#NAT64、DNS64实现轻量级ipv6访问ipv4" class="headerlink" title="NAT64、DNS64实现轻量级ipv6访问ipv4"></a>NAT64、DNS64实现轻量级ipv6访问ipv4</h1><p><strong>注意：此方法获得的访问速度小于1Mbps</strong>，比较适用于基础报文通信，例如本人使用与ddns访问腾讯云的api，（都2023年了，腾讯云的api怎么还没有ipv6，QAQ）</p>
+<p><strong>详细的NAT64和DNS64原理请自行<a href="https://cn.bing.com/search?q=nat64%E5%92%8Cdns64&form=ANNTH1&refig=656f14bc66a8459e8649899c5e7b8422&pc=LCTS">STFW</a>。</strong></p>
+<p>首先从网上STFW获得NAT64或DNS64服务器的<a href="https://cn.bing.com/search?q=%E5%85%8D%E8%B4%B9%E7%9A%84nat64%E5%92%8Cdns64%E6%9C%8D%E5%8A%A1%E5%99%A8&qs=n&form=QBRE&sp=-1&lq=0&pq=%E5%85%8D%E8%B4%B9%E7%9A%84nat64%E5%92%8Cdns64%E6%9C%8D%E5%8A%A1%E5%99%A8&sc=0-17&sk=&cvid=565A62A30E3B45BAB8401317A6420469&ghsh=0&ghacc=0&ghpl=">地址</a>，这个地址即为我们要用的DNS服务器地址,设置为我们要用的DNS即可，不要设置为全局DNS，会让网络非常非常慢。</p>
+<blockquote>
+<p> 我们从这个服务器获得纯ipv4域名的对应ipv6地址，访问这个ipv6地址即可达到类似访问此域名ipv4的效果，但是速度很低（毕竟免费的，dns服务器还在国外，带宽低能理解）。</p>
+</blockquote>
+<p>注意：Windows要设置成对特定域名指定特殊dns即可。在本地组策略编辑中添加dns解析策略即可。</p>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>6to4</tag>
+        <tag>ipv6</tag>
+        <tag>ipv4</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>QQ更改后缀</title>
+    <url>/2023/12/18/QQ%E6%9B%B4%E6%94%B9%E5%90%8E%E7%BC%80/</url>
+    <content><![CDATA[<p>原理</p>
+<ol>
+<li><p>\u202E 的作用是使得后续字符串从右至左读（RLO，即RIGHT-TO-LEFT OVERRIDE)，<br>如 123\u202EABC 输出后为 123CBA</p>
+</li>
+<li><p>\u202D 的作用是使得后续字符串从左至右左读（LRO，即LEFT-TO-RIGHT OVERRIDE)，，如 123\u202DABC 输出后为 123ABC</p>
+</li>
+</ol>
+<p>举例<br>在消息列表中，QQ会将昵称、冒号、消息三者进行字符串拼接进行显示。如：</p>
+<p>昵称：赵Y轩 \u202E \u202E !喵 \u202D<br>冒号：：<br>消息：12345<br>拼接后的字符串为：赵Y轩\u202E \u202E !喵\u202D：12345<br>以下是该字符串输出方式：(括号仅用来表示分组）</p>
+<p>赵Y轩 \u202E \u202E!喵\u202D：12345</p>
+<p>赵Y轩 \u202E (\u202E!喵) (\u202D：12345)</p>
+<p>赵Y轩 (\u202D：12345 ) (\u202E !喵 )</p>
+<p>赵Y轩 ：12345 \u202E !喵</p>
+<p>赵Y轩 ：12345 喵!</p>
+<p>输出完毕。</p>
+<p>此处的\u202E和\u202D已经被禁用</p>
+<p>改用</p>
+<p>从左到右隔离LEFT-TO-RIGHT ISOLATE（U+2066）：⁦</p>
+<p>从右到左隔离RIGHT-TO-LEFT ISOLATE（U+2067）:⁧</p>
+<p>例如：</p>
+<p>毛永兴⁧⁧<del>喵 ⁦<br>23-陈凡⁧⁧</del>喵 ⁦<br>⁧⁧~喵 ⁦</p>
+<p><a href="./%E5%96%B5%E5%90%8E%E7%BC%80.txt">实例文档</a>用txt格式打开</p>
+<p>字符代码复制<a href="https://fuhaoku.net/">网站</a></p>
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>qq</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows对特定域名指定DNS解析路径</title>
+    <url>/2023/12/18/Windows%E5%AF%B9%E7%89%B9%E5%AE%9A%E5%9F%9F%E5%90%8D%E6%8C%87%E5%AE%9ADNS%E8%A7%A3%E6%9E%90%E8%B7%AF%E5%BE%84/</url>
+    <content><![CDATA[<h1 id="Windows对特定域名指定DNS解析路径"><a href="#Windows对特定域名指定DNS解析路径" class="headerlink" title="Windows对特定域名指定DNS解析路径"></a>Windows对特定域名指定DNS解析路径</h1><p>[toc]</p>
+<p>[Windows客户端不同域名走不同DNS服务器_独行侠丶龙龙的博客-CSDN博客](<a href="https://blog.csdn.net/Lumiadragon/article/details/131360096#:~:text=%E5%9C%A8Windows%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%8E%AF%E5%A2%83%E4%B8%AD%EF%BC%8C%E4%B8%8D%E5%90%8C%E7%9A%84%E5%9F%9F%E5%90%8D%E8%B5%B0%E4%B8%8D%E5%90%8C%E7%9A%84DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9B">https://blog.csdn.net/Lumiadragon/article/details/131360096#:~:text=在Windows客户端环境中，不同的域名走不同的DNS服务器；</a> 以此应对企业级多元化解析需求。 1、打开Windows客户端中组策略设定 运行中，输入,gpedit.msc 并打开。 Windows搜索中，输入 编辑组策略 并打开。)</p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>DNS</tag>
+        <tag>本地策略组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ipv6与ddns-go</title>
+    <url>/2023/12/18/ipv6%E4%B8%8Eddns-go/</url>
+    <content><![CDATA[<h1 id="IPV6与ddns-go"><a href="#IPV6与ddns-go" class="headerlink" title="IPV6与ddns-go"></a>IPV6与ddns-go</h1><p>由于想使用校园网的ipv6，可是ipv6地址并不会固定，这里使用ddns-go的方法，将域名指定的IPV6自动更新。</p>
+<p>ddns-go会在服务设备连上网络时，自动向DNS服务器发送服务设备的IP以自动更新DNS的目标IP。</p>
+<p>前提要求：设备能正常访问ipv6（测试网站<a href="https://www.test-ipv6.com/index.html.zh_CN">IPv6 测试</a>），有域名（此处是腾讯云）</p>
+<h1 id="安装ddns-go"><a href="#安装ddns-go" class="headerlink" title="安装ddns-go"></a>安装ddns-go</h1><p>ddns-go安装地址：<a href="https://github.com/jeessy2/ddns-go">Releases · jeessy2&#x2F;ddns-go (github.com)</a></p>
+<p>其实开源网站处已经给出安装方法。此处仅记录自己的安装过程。</p>
+<p>这里时Windows系统，选择的Windows x86的release版本。</p>
+<p>下载后解压后，点击即可自动开启ddns-go的控制面板，路径为<code>127.0.0.1:9876</code>。</p>
+<p>要想自动启用，可以在当前目录下打开管理员身份的PowerShell，输入一下命令即可安装ddns-go服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.\ddns-go.exe -s install</span><br></pre></td></tr></table></figure>
+
+<p>可以在任务管理器的“服务”中看到该服务，也可以在windows的服务管理（任务管理器的“服务”下面有个打开服务）找到该服务、可以根据需求配置自启动规则。</p>
+<h1 id="配置ddns-go"><a href="#配置ddns-go" class="headerlink" title="配置ddns-go"></a>配置ddns-go</h1><p>首先进入ddns-go的控制面板<code>127.0.0.1:9876</code>。</p>
+<p>1、选择DNS服务商，DNS解析服务用的哪个就选哪个。我这里选择的时腾讯云。</p>
+<p>2、创建对应的API。这里对应之前选的创建腾讯云API，到腾讯API密钥面板中，直接点击新建密钥即可，然后将SecretId和SecretKey对应填入。</p>
+<p><img src="/.%5Cipv6%E4%B8%8Eddns-go%5Cimage-20231118214733331.png" alt="image-20231118214733331"></p>
+<p>3、配置IP。由于这里没有公网IPV4，这里不使用IPV4，取消IPV4的勾选。勾选IPV6启用，我的配置是：通过网卡获取IP、匹配正则表达式：@1、Domains填入自己的域名，推荐是使用一个你的子域名即可。例如example.com域名，填入test.example.com就会在你的域名example.com下创建一条test主机名的解析地址。</p>
+<p>4、此时保存即可使用。可以在日志中查看相应信息。建议在其他配置中开启 禁止公网访问，并设置登录用户名、密码，下次进入控制面板时要输入这个用户名密码。</p>
+<blockquote>
+<p>其他参考：<a href="https://tendcode.com/subject/article/ddns-go">ddns-go 的使用，实现公网 IPv6 下动态域名解析上网DDNS_TendCode</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>ipv6</tag>
+        <tag>DNS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>openVPN配置搭建私人VPN</title>
+    <url>/2023/12/18/openVPN%E9%85%8D%E7%BD%AE%E6%90%AD%E5%BB%BA%E7%A7%81%E4%BA%BAVPN/</url>
+    <content><![CDATA[<h1 id="openVPN配置搭建私人VPN-for-Windows"><a href="#openVPN配置搭建私人VPN-for-Windows" class="headerlink" title="openVPN配置搭建私人VPN for Windows"></a>openVPN配置搭建私人VPN for Windows</h1><blockquote>
+<p> <strong>首先说明：不要在未报备的情况下，使用VPN跨国通联，这将是违法行为</strong></p>
+</blockquote>
+<p><strong>解决的问题：</strong>使用openVPN通过ipv6实现私人VPN设置，实现远程联通到服务端的本地局域网（实际上还可以使用桥接模式课实现通过服务器和组织已有的大型局域网相连接，这里没有使用）。实现了sunshine的视频串流，用于远程操控电脑。</p>
+<p>其他平替方案还有：Openwrt、zerotier，或者直接使用windows的wsl。</p>
+<p><strong>openVPN开源项目</strong></p>
+<p>openVPN的gitHub开源<a href="https://github.com/OpenVPN/openvpn/">OpenVPN&#x2F;openvpn</a>，openVPN官网<a href="https://openvpn.net/">openvpn.net</a></p>
+<p>从<a href="https://openvpn.net/community-downloads/">openvpn.net</a>安装openVPN，注意windows端版本。</p>
+<p>我这里是在Windows10环境下，安装的是<code>OpenVPN-2.6.8-I001-amd64.msi</code>。</p>
+<p>双击跟随引导完成安装。</p>
+<p>安卓端需要google的服务框架，可以从Google play下载，或者使用下面的连接安装</p>
+<p>Android:<a href="https://cn.apkshki.com/app/openvpn-connect">OpenVPN Connect</a></p>
+<p><strong>注：</strong>服务端和客户端程序是同一个，区别是配置文件的不同。</p>
+<h2 id="EASY-RSA配置证书"><a href="#EASY-RSA配置证书" class="headerlink" title="EASY-RSA配置证书"></a>EASY-RSA配置证书</h2><p>从openVPN的GitHub上安装<a href="https://github.com/OpenVPN/easy-rsa">Easy-RSA</a>的release版本，这里用的是目前最新版V3.1.7</p>
+<blockquote>
+<p>如想不知道RSA是干嘛的，请自行搜索 ”TLS“</p>
+</blockquote>
+<p>将文件下载好后解压。文件夹内部：</p>
+<p>主要使用的是EasyRSA目录下的<code>EasyRSA-Start.bat</code>脚本。通过该脚本提供的<code>EasyRSA Shell</code>进行CA root的生成，证书等大部分操作。</p>
+<p>参考文献在EasyRSA目录下的README.quickstart.html文件，包含一些基本的操作指令。</p>
+<p>也可以在EasyRSA Shell下使用<code>./easyrsa -h</code>获得帮助。</p>
+<p><strong>操作开始：</strong></p>
+<blockquote>
+<p>可以将CA和server、client做在一起，并无影响，此处只是为了尽量规范化的将其分开</p>
+<p>做在一起则不需要重复init-pki和配置，在同一个RSA Shell中完成操作即可</p>
+</blockquote>
+<p><strong>CA证书签发端：</strong></p>
+<p>创建一个CA文件夹，在这个文件夹下：</p>
+<p>将EasyRSA压缩包的文件解压到此，</p>
+<p><strong>var</strong>参数配置。这些参数是一些基本的信息变量。服务端和客户端的var内容一致不知道会不会有问题。</p>
+<p>将文件夹下的var.example复制一份并去除掉后缀，用记事本打开，根据需求修改参数。看不懂的话，大部分参数保持默认即可，下翻找到如下信息，修改成对应的就行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#set_var EASYRSA_REQ_COUNTRY	&quot;US&quot;	#国家</span><br><span class="line">#set_var EASYRSA_REQ_PROVINCE	&quot;California&quot;	#地区、省</span><br><span class="line">#set_var EASYRSA_REQ_CITY	&quot;San Francisco&quot;	#城市</span><br><span class="line">#set_var EASYRSA_REQ_ORG	&quot;Copyleft Certificate Co&quot;	#公司</span><br><span class="line">#set_var EASYRSA_REQ_EMAIL	&quot;me@example.net&quot;	#邮箱</span><br><span class="line">#set_var EASYRSA_REQ_OU		&quot;My Organizational Unit&quot;	#公司单位</span><br></pre></td></tr></table></figure>
+
+<p>初始化pki：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa init-pki</span><br></pre></td></tr></table></figure>
+
+<p>构建CA根证书：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa build-ca</span><br></pre></td></tr></table></figure>
+
+<p>回车后会要求设置密码，用于后面CA进行签名</p>
+<p>生成证书撤销列表（CRL）密钥：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa gen-crl</span><br></pre></td></tr></table></figure>
+
+<p>之后想要删除某个客户端证书，可以通过如下命令撤销证书：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa revoke &lt;name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>server端：</strong></p>
+<p>创建一个server文件夹：</p>
+<p>将EasyRSA压缩包的文件解压到此，</p>
+<p>重复上面的init操作。</p>
+<p>初始化pki：（如果和server端在一起就不用再初始化，初始化会清空<code>\pki</code>文件夹到默认值，会删除里面已存在的证书）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa init-pki</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成申请</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa gen-req &lt;Server&gt; nopass</span><br></pre></td></tr></table></figure>
+
+<p>这里是生成了一个名为Server的实体，也就是服务端的公钥和私钥，nopass后缀是指定不用密码加密私钥，需要加密则删去该后缀。</p>
+<p>回车后会要求设置密码等操作，直接回车会使用默认值。</p>
+<p><strong>导入公钥（如果是同一文件夹下则不需要导入）</strong></p>
+<p>生成完成后会给出公钥server.req和私钥server.key的文件位置。</p>
+<p>复制证书：（此处如果server和CA是同一个，就直接进行CA签署即可）</p>
+<p>生成好了后，再CA文件夹下创建一个<code>/tempPKI/tempReqs/</code>目录，将server公钥server.req复制到CA文件夹下的<code>/tempPKI/tempReqs/</code>目录。（在Windows目录环境下老是有些奇怪的问题，这里就干脆将文件直接复制过来了，当然，也可以直接使用req生成时给出的路径）</p>
+<p>再使用CA的RSA shell：</p>
+<p>将req导入：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa import-req /tempPKI/tempReqs/server.req &lt;servername&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>签署：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa sign-req server &lt;servername&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此步骤将会使用CA的私钥进行签署，需要之前设置的CA私钥密码。</p>
+<p>创建Diffie-Hellman，此步骤只用于服务端：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./easyrsa gen-dh</span><br></pre></td></tr></table></figure>
+
+<p><strong>client端：</strong></p>
+<p>创建一个client文件夹：</p>
+<p>后续与server端类似。</p>
+<blockquote>
+<p>参考文章<a href="https://blog.csdn.net/cx776474961/article/details/88775745">Linux easy-rsa制作证书_.&#x2F;easyrsa sign server server-CSDN博客</a></p>
+</blockquote>
+<p><strong>结果</strong></p>
+<p>CA端：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-/pki/</span><br><span class="line">ca.crt</span><br><span class="line">-/pki/issued/</span><br><span class="line">client.crt</span><br><span class="line">server.crt</span><br><span class="line">-/pki/private/</span><br><span class="line">ca.key</span><br><span class="line">dh.pem</span><br><span class="line">crl.pem</span><br></pre></td></tr></table></figure>
+
+<p>server:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-/pki/</span><br><span class="line">ca.crt</span><br><span class="line">-/pki/issued/</span><br><span class="line">server.crt</span><br><span class="line">-/pki/private/</span><br><span class="line">server.key</span><br></pre></td></tr></table></figure>
+
+<p>client:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-/pki/</span><br><span class="line">ca.crt</span><br><span class="line">-/pki/issued/</span><br><span class="line">client.crt</span><br><span class="line">-/pki/private/</span><br><span class="line">client.key</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成TLS认证密钥</strong></p>
+<p>到openVPN的安装目录下</p>
+<p>找到&#x2F;bin文件夹，在此目录下打开cmd命令窗口（不能直接打开就用win+r输入cmd打开，然后cd到此目录下</p>
+<blockquote>
+<p>如果C盘Program Files里可能因为权限问题无法直接写入</p>
+<p>然后将此文件创建到D盘根目录或者rsa的pki&#x2F;private文件夹下保存</p>
+</blockquote>
+<p>写入<code>ta.key</code>文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.\openvpn.exe --genkey --secret D:\ta.key</span><br></pre></td></tr></table></figure>
+
+<p><strong>复制文件</strong></p>
+<p>将这一系列生成好的配置复制到openVPN中：</p>
+<p>复制生成好的ca证书，ta.key和server端证书及密钥到openvpn的server或client的config文件夹里</p>
+<p>server端config需要的文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ca.crt</span><br><span class="line">ta.key</span><br><span class="line">server.key</span><br><span class="line">server.crt</span><br><span class="line">dh.pem</span><br><span class="line">crl.pem</span><br></pre></td></tr></table></figure>
+
+<p>client端config需要的文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ca.crt</span><br><span class="line">ta.key</span><br><span class="line">client.key</span><br><span class="line">client.crt</span><br><span class="line">dh.pem</span><br><span class="line">crl.pem</span><br></pre></td></tr></table></figure>
+
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>openVPN的客户端和服务端程序一致，区别是配置文件不同，<code>server.ovpn</code>为服务端，<code>client.ovpn</code>为客户端。</p>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><p>从<a href="https://github.com/OpenVPN/openvpn/blob/master/sample/sample-config-files/server.conf">openvpn</a>上下载server端配置文件<code>server.conf</code>,或者直接在安装目录下（可以通过任务管理器查找到）的sample-config里找到，将文件复制到<code>C:\Users\&lt;usr&gt;\OpenVPN\config\</code>目录下,并重命名为<code>server.ovpn</code>。</p>
+<p><strong>配置server.ovpn</strong></p>
+<p>用记事本打开：</p>
+<blockquote>
+<p>注意：此文件中#和；都视为注释</p>
+</blockquote>
+<p>修改以下选项：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">port 1194 #选用1194端口为vpn所在端口</span><br><span class="line">proto udp #使用udp</span><br><span class="line">dev tun #使用tun</span><br><span class="line">dev-node &quot;OpenVPN TAP-Windows6&quot; #设置网络节点，这里输入windows电脑的网络适配器名称，位置在控制面板》网络和internet》网络连接，其中的OpenVPN TAP-Windows6是在安装的时候，msi程序自动添加的，一个适配器只能支持一个server，名字要用引号括起来。</span><br><span class="line">ca ca.crt</span><br><span class="line">cert server.crt</span><br><span class="line">key server.key  </span><br><span class="line">dh dh.pem</span><br><span class="line">#这里将之前所说的server端需要的几个配置文件全复制到与.ovpn文件相同的目录下，这里改成对应的名字</span><br><span class="line">topology subnet #使用subnet组网</span><br><span class="line">server 192.168.123.0 255.255.255.0 #设定使用的网段，在cmd中使用ipconfig查看已被使用的网段，设置一个没有被使用的网段，服务器将使用xxx.xxx.xxx.1 其他设备按顺序获得ip</span><br><span class="line">ifconfig-pool-persist ipp.txt #记录曾经登录过的客户端与对应ip</span><br><span class="line">push &quot;route 192.168.123.0 255.255.255.0&quot; #push route给client端，注意此处添加的路由将会把除server的ip以外的其他网段加入vpn访问的目标。</span><br><span class="line">client-to-client #打开客户端之间的通信</span><br><span class="line">keepalive 10 120</span><br><span class="line">tls-auth ta.key 0 #server端后缀为0，此处ta.key是之前生成的。</span><br><span class="line">cipher AES-256-CBC #不用改</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">status openvpn-status.log #ip使用记录日志</span><br><span class="line">verb 3 #不用改</span><br><span class="line">explicit-exit-notify 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>开放端口：</strong></p>
+<p>打开控制面板，找到防火墙》高级设置，新建入站规则，选择端口，开放UDP，指定端口1194，命名方便辨识即可。</p>
+<p><strong>共享Internet连接：</strong></p>
+<p>通过此步骤将vpn接入到你要广播的IP上。</p>
+<p>此处我要将vpn部署在网络适配器“以太网 3”上，使用其ipv6进行接入公网。</p>
+<p>在”控制面板》网络和internet》网络连接“中找到“以太网 3”，右击》“属性”》”共享“，勾选”允许其他网络用户通过此计算机的Internet连接来连接“，在下面选项选择之前.ovpn配置中指定的网络适配器”OpenVPN TAP-Windows6” ,确定。(不开启这一步，会导致远程电脑TLS握手超时失败)</p>
+<p><strong>启动VPN server</strong></p>
+<p>在任务栏右侧找到openVPN GUI，右键》连接即可启动。如果有报错说明存在地方没配好，查看日志了解详细信息即可。</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p><strong>Windows</strong></p>
+<p>使用相同的安装程序安装好后，将之前生成的证书等文件复制到<code>C:\Users\&lt;usr&gt;\OpenVPN\config\</code>目录下，并从openVPN的安装目录的sample-config里找到client.conf改为client.ovpn。</p>
+<p><strong>注意：</strong>不同设备使用vpn要使用不同的证书，再生成几个就行。</p>
+<p>修改如下文件内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">client #标识为客户端</span><br><span class="line">dev tun #使用tun，这里要和服务端一致</span><br><span class="line">#不要开启dev-node</span><br><span class="line">proto udp #这里要和服务端一致</span><br><span class="line">remote &lt;yourhostname or ip address&gt; 1194 #端口与服务端一致，可以填ip或hostname，最终ip指向的是前面共享的那个网络适配器，我这里是&quot;以太网3&quot;,会自动检测是ipv4或者ipv6,可以用多个remote,程序会自动按顺序选择，如果开启了remote-random选项（即取消注释），则随机选择</span><br><span class="line">resolv-retry infinite #无限次重连尝试</span><br><span class="line">nobind</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">mute-replay-warnings</span><br><span class="line">ca ca.crt</span><br><span class="line">cert client.crt</span><br><span class="line">key client.key</span><br><span class="line">remote-cert-tls server</span><br><span class="line">tls-auth ta.key 1 #client端后缀为1，此处ta.key是之前生成的。</span><br><span class="line">cipher AES-256-CBC</span><br><span class="line">verb 3</span><br></pre></td></tr></table></figure>
+
+<p>如果不想每次配置都要复制ca.crt等一堆证书，可以把他们合成一个文件，在client.ovpn文件结尾追加：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">&lt;ca&gt;</span><br><span class="line">这里放入你的ca.crt文件内容</span><br><span class="line">&lt;/ca&gt;</span><br><span class="line"></span><br><span class="line">&lt;cert&gt;</span><br><span class="line">这里放入你的client.crt文件内容</span><br><span class="line">&lt;/cert&gt;</span><br><span class="line"></span><br><span class="line">&lt;key&gt;</span><br><span class="line">这里放入你的client.key文件内容</span><br><span class="line">&lt;/key&gt;</span><br><span class="line">key-direction 1</span><br><span class="line">&lt;tls-auth&gt;</span><br><span class="line">这里放入你的ta.key文件内容</span><br><span class="line">&lt;/tls-auth&gt;</span><br></pre></td></tr></table></figure>
+
+<p>同时删除前面的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ca ca.crt</span><br><span class="line">cert client.crt</span><br><span class="line">key client.key</span><br><span class="line">tls-auth ta.key 1 </span><br></pre></td></tr></table></figure>
+
+<p>然后就可以在config文件夹中只放入client.ovpn即可。</p>
+<p>（注意，此方法不适用于Android客户端）</p>
+<p>任务管理器右侧选，右键择连接。</p>
+<h3 id="Android端"><a href="#Android端" class="headerlink" title="Android端"></a>Android端</h3><p>需要下载openVPN app。</p>
+<p>我这里用的是安卓端的3.3.4版本。</p>
+<p>配置文件与电脑端一致，但需要把配置文件和证书文件分开：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ca.crt</span><br><span class="line">client.crt</span><br><span class="line">client.key</span><br><span class="line">ta.key</span><br><span class="line">client.ovpn</span><br></pre></td></tr></table></figure>
+
+<p>进入软件，点击加号，选择Upload File，</p>
+<p>同时选择这几个文件即可（用Android自带的文件管理可以选择多个文件同时导入，左上角选择）。</p>
+<p>点击连接。</p>
+<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><p>有多个网络连接server时需要修改好路由表，保证vpn的路由跃点数最小。</p>
+<p>提示有Adapter未启用，或者xxx未启用，在服务中开启即可。最好设置其自动启动自动重启。</p>
+<p><strong>如何查找需要访问的目标内网网页的ip：</strong></p>
+<p>1、在内网中直接访问目标网页，获取其域名或者直接有ip</p>
+<p>2、通过<code>ping -4 &lt;hostname&gt;</code>获取其ipv4的IP地址</p>
+<p>3、填入对应的route，重启服务器即可更新配置。</p>
+<h2 id="自己使用时遇到的BUG"><a href="#自己使用时遇到的BUG" class="headerlink" title="自己使用时遇到的BUG"></a>自己使用时遇到的BUG</h2><p><strong>1、能连上vpn，但推送的路由失效，server和client无法ping通</strong></p>
+<p>检查下VPN所在的网卡ip，我的网卡老是被奇怪的设置手动固定IP：192.168.137.1，导致路由出错</p>
+<p><strong>2、连不上VPN</strong></p>
+<p>可能IP发生了变化，稍等一会即可。如果恢复不了，只能通过其他办法连接、线下修复或者期待奇迹出现。</p>
+<blockquote>
+<p>我遇到过的情况：</p>
+<p>ip掉了（<strong>被上级路由ban了，上级路由寄了，或者网卡出问题没能DHCP到ip、ipv6有ip却ping不通任何</strong>（这个可太难了，没找到原因，反复重装驱动、卸载安装、调试跟踪路由都没有用，还会在莫名奇妙好了一会后再次断连，发现没有自动获取到ipv6的dns，关闭ipv4协议后有概率使ipv6复活，有时候还会在有ipv6地址和ipv6的dns服务器地址时，ping不通dns，tracert报错1231））</p>
+<p>、服务器ip被clash之类的代理软件代理掉了、网卡的共享莫名奇妙掉了</p>
+</blockquote>
+<p>注意：外置网卡，特别是外置网卡上还有附带usb的，要设置设备的省电策略，免得被自动关闭。</p>
+<p><strong>参考连接：</strong></p>
+<p><a href="https://openvpn.net/community-resources/how-to/#intended-audience">操作指南：设置和配置 OpenVPN 客户端&#x2F;服务器 VPN |OpenVPN的</a></p>
+<p>[[笔记]Windows使用OpenVpn构建虚拟局域网_windows 搭建vpn-CSDN博客](<a href="https://blog.csdn.net/qq1113673178/article/details/130488876?ops_request_misc=%7B%22request_id%22:%22170040623616800213098785%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=170040623616800213098785&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-130488876-null-null.142%5Ev96%5Epc_search_result_base7&utm_term=openvpn">https://blog.csdn.net/qq1113673178/article/details/130488876?ops_request_misc=%7B%22request%5Fid%22%3A%22170040623616800213098785%22%2C%22scm%22%3A%2220140713.130102334..%22%7D&amp;request_id=170040623616800213098785&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-130488876-null-null.142^v96^pc_search_result_base7&amp;utm_term=openvpn</a> windows&amp;spm&#x3D;1018.2226.3001.4187)</p>
+<p><a href="https://zhuanlan.zhihu.com/p/199176752">openvpn搭建与使用 - 知乎 (zhihu.com)</a></p>
+]]></content>
+      <categories>
+        <category>OpenVPN</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>openVPN</tag>
+        <tag>Easy-RSA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法</title>
+    <url>/2023/12/18/%E5%AE%B6%E5%BA%AD%E7%89%88Windows%E6%9C%AC%E5%9C%B0%E7%BB%84%E7%AD%96%E7%95%A5%E7%BC%96%E8%BE%91%EF%BC%88gpedit.msc%EF%BC%89%E4%B8%8D%E5%AD%98%E5%9C%A8%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="家庭版Windows本地组策略编辑（gpedit-msc）不存在解决办法"><a href="#家庭版Windows本地组策略编辑（gpedit-msc）不存在解决办法" class="headerlink" title="家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法"></a>家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法</h1><p>[toc]</p>
+<p><strong>家庭版Windows无法打开gpedit.msc</strong></p>
+<p>在桌面创建一个gpedit.txt文件，打开输入以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">pushd &quot;%~dp0&quot;</span><br><span class="line">dir /b %systemroot%\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~3*.mum &gt;gp.txt</span><br><span class="line">dir /b  %systemroot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~3*.mum &gt;&gt;gp.txt</span><br><span class="line">for /f %%i in (&#x27;findstr /i . gp.txt 2^&gt;nul&#x27;) do dism /online /norestart /add-package:&quot;%systemroot%\servicing\Packages\%%i&quot;</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
+
+<p>退出，更改后缀为<code>.bat</code>，右键，点击以管理员身份运行。</p>
+<p>等待脚本执行完成。</p>
+<p>脚本执行完成后，之前写的文件可删。</p>
+<p>使用<code>win+r</code>，执行<code>gpedit.msc</code>即可打开本地组策略编辑</p>
+<blockquote>
+<p><a href="https://www.xitongcheng.com/jiaocheng/win10_article_62313.html">参考连接</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>gpedit.msc</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>局域网共享剪贴板</title>
+    <url>/2023/12/18/%E5%B1%80%E5%9F%9F%E7%BD%91%E5%85%B1%E4%BA%AB%E5%89%AA%E8%B4%B4%E6%9D%BF/</url>
+    <content><![CDATA[<h1 id="局域网共享剪贴板"><a href="#局域网共享剪贴板" class="headerlink" title="局域网共享剪贴板"></a>局域网共享剪贴板</h1><p>[toc]</p>
+<p>该方案服务端域使用程序一样，但是使用的配置文件不同。实际使用时占用空间差不多为1M。</p>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><p>配置文件<code>config.yml</code>为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Role: server</span><br><span class="line">Port: 55555</span><br><span class="line">Password: 1234567890</span><br></pre></td></tr></table></figure>
+
+<p><strong>需要手动创建该文件</strong>，将该文件放在和程序文件一个文件夹下。</p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p>配置文件<code>config.yml</code>为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Host: 192.168.43.196</span><br><span class="line">Port: 55555</span><br><span class="line">Password: 1234567890</span><br></pre></td></tr></table></figure>
+
+<p><strong>需要手动创建该文件</strong>，将该文件放在和程序文件一个文件夹下。</p>
+<p>执行后放在后台静默运行即可，建议使用脚本并隐藏黑色控制台。</p>
+<p>使用<code>win</code>+<code>v</code>即可查看剪贴板，复制后的东西都会存在这，两台电脑共享，还可满足多台电脑的共享。</p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>network share</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>无终端窗口后台运行脚本</title>
+    <url>/2023/12/18/%E6%97%A0%E7%BB%88%E7%AB%AF%E7%AA%97%E5%8F%A3%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC/</url>
+    <content><![CDATA[<h1 id="无终端窗口后台运行脚本"><a href="#无终端窗口后台运行脚本" class="headerlink" title="无终端窗口后台运行脚本"></a>无终端窗口后台运行脚本</h1><p>Linux后台运行进程：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nohup &quot;运行的内容&quot; &amp;</span><br></pre></td></tr></table></figure>
+
+<p>windows相应功能的命令行如下(此方法进程有页面，可能会在桌面展示，关闭窗口后进程消失。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">call</span> <span class="keyword">start</span> <span class="operator">/</span>min &quot;n&quot; &quot;运行的内容&quot;</span><br></pre></td></tr></table></figure>
+
+<p>windows下</p>
+<h2 id="方法一：使用bat脚本"><a href="#方法一：使用bat脚本" class="headerlink" title="方法一：使用bat脚本"></a>方法一：使用bat脚本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pushd %~dp0</span><br><span class="line">powershell.exe -command &quot;&amp; &#123;Start-Process -WindowStyle hidden -FilePath &#x27;文件路径&#x27;&#125;&quot;</span><br><span class="line">popd</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
+
+<p>文件后缀<code>*.bat</code></p>
+<h2 id="方法二：使用powershell"><a href="#方法二：使用powershell" class="headerlink" title="方法二：使用powershell"></a>方法二：使用<code>powershell</code></h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Start-Process -WindowStyle hidden -FilePath &quot;文件路径&quot; </span><br></pre></td></tr></table></figure>
+
+<p>文件后缀<code>*.ps1</code></p>
+<p>如何停止：<br>查看当前进程</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tasklist |findstr <span class="string">&quot;进程名&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>从左到右为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">映像名称                   PID 会话名              会话#       内存使用</span><br></pre></td></tr></table></figure>
+
+<p>还可以通过进程id查看端口号:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">netstat -ano|findstr <span class="string">&quot;进程id“</span></span><br></pre></td></tr></table></figure>
+
+<p>杀死进程：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kill 进程id</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>bash</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>自动运行程序脚本</title>
+    <url>/2023/12/18/%E8%87%AA%E5%8A%A8%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F%E8%84%9A%E6%9C%AC/</url>
+    <content><![CDATA[<h1 id="自动运行程序脚本"><a href="#自动运行程序脚本" class="headerlink" title="自动运行程序脚本"></a>自动运行程序脚本</h1><h2 id="使用-bat后缀文件脚本自动执行程序"><a href="#使用-bat后缀文件脚本自动执行程序" class="headerlink" title="使用.bat后缀文件脚本自动执行程序"></a>使用.bat后缀文件脚本自动执行程序</h2><p>大致文件内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">D:</span><br><span class="line">cd D:\software\Sunshine\tools</span><br><span class="line">dxgi-info.exe</span><br><span class="line">cmd</span><br></pre></td></tr></table></figure>
+
+<p>基本原理是使用cmd命令终端，将路径移动到目标文件所在目录然后执行程序。</p>
+<p>此脚本会保留命令窗口。</p>
+<p>增加命令似乎只能在最终cmd那行之前。</p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>bash</tag>
+      </tags>
+  </entry>
 </search>

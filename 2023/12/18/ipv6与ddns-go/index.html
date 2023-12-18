@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon/favicon-320x320-m-color.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon/favicon-64x64-m.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon/favicon-32x32-m.png">
+  <link rel="mask-icon" href="/images/icon/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"myxln.love","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="IPV6与ddns-go由于想使用校园网的ipv6，可是ipv6地址并不会固定，这里使用ddns-go的方法，将域名指定的IPV6自动更新。 ddns-go会在服务设备连上网络时，自动向DNS服务器发送服务设备的IP以自动更新DNS的目标IP。 前提要求：设备能正常访问ipv6（测试网站IPv6 测试），有域名（此处是腾讯云） 安装ddns-goddns-go安装地址：Releases · jee">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ipv6与ddns-go">
+<meta property="og:url" content="https://myxln.love/2023/12/18/ipv6%E4%B8%8Eddns-go/index.html">
+<meta property="og:site_name" content="MyxLnBlog">
+<meta property="og:description" content="IPV6与ddns-go由于想使用校园网的ipv6，可是ipv6地址并不会固定，这里使用ddns-go的方法，将域名指定的IPV6自动更新。 ddns-go会在服务设备连上网络时，自动向DNS服务器发送服务设备的IP以自动更新DNS的目标IP。 前提要求：设备能正常访问ipv6（测试网站IPv6 测试），有域名（此处是腾讯云） 安装ddns-goddns-go安装地址：Releases · jee">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://myxln.love/.%5Cipv6%E4%B8%8Eddns-go%5Cimage-20231118214733331.png">
+<meta property="article:published_time" content="2023-12-18T10:53:30.000Z">
+<meta property="article:modified_time" content="2023-12-18T10:54:25.269Z">
+<meta property="article:author" content="MyxLn000">
+<meta property="article:tag" content="ipv6">
+<meta property="article:tag" content="DNS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://myxln.love/.%5Cipv6%E4%B8%8Eddns-go%5Cimage-20231118214733331.png">
+
+
+<link rel="canonical" href="https://myxln.love/2023/12/18/ipv6%E4%B8%8Eddns-go/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://myxln.love/2023/12/18/ipv6%E4%B8%8Eddns-go/","path":"2023/12/18/ipv6与ddns-go/","title":"ipv6与ddns-go"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ipv6与ddns-go | MyxLnBlog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">MyxLnBlog</p>
+      <i class="logo-line"></i>
+    </a>
+      <img class="custom-logo-image" src="/images/icon/web-head.png" alt="MyxLnBlog">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IPV6%E4%B8%8Eddns-go"><span class="nav-number">1.</span> <span class="nav-text">IPV6与ddns-go</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ddns-go"><span class="nav-number">2.</span> <span class="nav-text">安装ddns-go</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEddns-go"><span class="nav-number">3.</span> <span class="nav-text">配置ddns-go</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MyxLn000"
+      src="/images/user-head.jpg">
+  <p class="site-author-name" itemprop="name">MyxLn000</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/MyxLn000/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MyxLn000&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://tobios.eu.org/" title="https:&#x2F;&#x2F;tobios.eu.org&#x2F;" rel="noopener" target="_blank">tobios` blog</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+      <div>
+	<img id="banner" src="">
+
+	      <!--	<img id="banner" src="/./images/default-background.jpg"> -->
+      </div>
+     
+    <!-- 改变css样式 -->
+        <script type="text/javascript" src="/js/src/bg-beautifier.js"></script>
+        <script>hexoChangeBanner();</script>
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://myxln.love/2023/12/18/ipv6%E4%B8%8Eddns-go/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/user-head.jpg">
+      <meta itemprop="name" content="MyxLn000">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyxLnBlog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ipv6与ddns-go | MyxLnBlog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ipv6与ddns-go
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-12-18 18:53:30 / 修改时间：18:54:25" itemprop="dateCreated datePublished" datetime="2023-12-18T18:53:30+08:00">2023-12-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="IPV6与ddns-go"><a href="#IPV6与ddns-go" class="headerlink" title="IPV6与ddns-go"></a>IPV6与ddns-go</h1><p>由于想使用校园网的ipv6，可是ipv6地址并不会固定，这里使用ddns-go的方法，将域名指定的IPV6自动更新。</p>
+<p>ddns-go会在服务设备连上网络时，自动向DNS服务器发送服务设备的IP以自动更新DNS的目标IP。</p>
+<p>前提要求：设备能正常访问ipv6（测试网站<a target="_blank" rel="noopener" href="https://www.test-ipv6.com/index.html.zh_CN">IPv6 测试</a>），有域名（此处是腾讯云）</p>
+<h1 id="安装ddns-go"><a href="#安装ddns-go" class="headerlink" title="安装ddns-go"></a>安装ddns-go</h1><p>ddns-go安装地址：<a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go">Releases · jeessy2&#x2F;ddns-go (github.com)</a></p>
+<p>其实开源网站处已经给出安装方法。此处仅记录自己的安装过程。</p>
+<p>这里时Windows系统，选择的Windows x86的release版本。</p>
+<p>下载后解压后，点击即可自动开启ddns-go的控制面板，路径为<code>127.0.0.1:9876</code>。</p>
+<p>要想自动启用，可以在当前目录下打开管理员身份的PowerShell，输入一下命令即可安装ddns-go服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\ddns-go.exe -s install</span><br></pre></td></tr></table></figure>
+
+<p>可以在任务管理器的“服务”中看到该服务，也可以在windows的服务管理（任务管理器的“服务”下面有个打开服务）找到该服务、可以根据需求配置自启动规则。</p>
+<h1 id="配置ddns-go"><a href="#配置ddns-go" class="headerlink" title="配置ddns-go"></a>配置ddns-go</h1><p>首先进入ddns-go的控制面板<code>127.0.0.1:9876</code>。</p>
+<p>1、选择DNS服务商，DNS解析服务用的哪个就选哪个。我这里选择的时腾讯云。</p>
+<p>2、创建对应的API。这里对应之前选的创建腾讯云API，到腾讯API密钥面板中，直接点击新建密钥即可，然后将SecretId和SecretKey对应填入。</p>
+<p><img src="/.%5Cipv6%E4%B8%8Eddns-go%5Cimage-20231118214733331.png" alt="image-20231118214733331"></p>
+<p>3、配置IP。由于这里没有公网IPV4，这里不使用IPV4，取消IPV4的勾选。勾选IPV6启用，我的配置是：通过网卡获取IP、匹配正则表达式：@1、Domains填入自己的域名，推荐是使用一个你的子域名即可。例如example.com域名，填入test.example.com就会在你的域名example.com下创建一条test主机名的解析地址。</p>
+<p>4、此时保存即可使用。可以在日志中查看相应信息。建议在其他配置中开启 禁止公网访问，并设置登录用户名、密码，下次进入控制面板时要输入这个用户名密码。</p>
+<blockquote>
+<p>其他参考：<a target="_blank" rel="noopener" href="https://tendcode.com/subject/article/ddns-go">ddns-go 的使用，实现公网 IPv6 下动态域名解析上网DDNS_TendCode</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="MyxLn000 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>MyxLn000
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://myxln.love/2023/12/18/ipv6%E4%B8%8Eddns-go/" title="ipv6与ddns-go">https://myxln.love/2023/12/18/ipv6与ddns-go/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ipv6/" rel="tag"># ipv6</a>
+              <a href="/tags/DNS/" rel="tag"># DNS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/18/QQ%E6%9B%B4%E6%94%B9%E5%90%8E%E7%BC%80/" rel="prev" title="QQ更改后缀">
+                  <i class="fa fa-angle-left"></i> QQ更改后缀
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">MyxLn000</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("10/1/2023 10:00:00");
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒.";
+    }
+setInterval("createtime()",250);
+</script>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+  
+  <script>
+   // document.oncontextmenu = function(){ return false; };
+
+   // document.onselectstart = function(){ return false; };
+
+    document.oncut = function(){ return false; };
+  </script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"MyxLn000","repo":"MyxLnBlog","client_id":"856cf8b47e82f91e7188","client_secret":"8bdd92db62abbf743bcb4271fb3826bfcc84f5bd","admin_user":"MyxLn000","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e920c2c053052422da48c8e4a4c02603"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
