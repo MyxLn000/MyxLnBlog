@@ -523,29 +523,6 @@
       </tags>
   </entry>
   <entry>
-    <title>家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法</title>
-    <url>/2023/12/18/%E5%AE%B6%E5%BA%AD%E7%89%88Windows%E6%9C%AC%E5%9C%B0%E7%BB%84%E7%AD%96%E7%95%A5%E7%BC%96%E8%BE%91%EF%BC%88gpedit.msc%EF%BC%89%E4%B8%8D%E5%AD%98%E5%9C%A8%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="家庭版Windows本地组策略编辑（gpedit-msc）不存在解决办法"><a href="#家庭版Windows本地组策略编辑（gpedit-msc）不存在解决办法" class="headerlink" title="家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法"></a>家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法</h1><p>[toc]</p>
-<p><strong>家庭版Windows无法打开gpedit.msc</strong></p>
-<p>在桌面创建一个gpedit.txt文件，打开输入以下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">pushd &quot;%~dp0&quot;</span><br><span class="line">dir /b %systemroot%\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~3*.mum &gt;gp.txt</span><br><span class="line">dir /b  %systemroot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~3*.mum &gt;&gt;gp.txt</span><br><span class="line">for /f %%i in (&#x27;findstr /i . gp.txt 2^&gt;nul&#x27;) do dism /online /norestart /add-package:&quot;%systemroot%\servicing\Packages\%%i&quot;</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
-
-<p>退出，更改后缀为<code>.bat</code>，右键，点击以管理员身份运行。</p>
-<p>等待脚本执行完成。</p>
-<p>脚本执行完成后，之前写的文件可删。</p>
-<p>使用<code>win+r</code>，执行<code>gpedit.msc</code>即可打开本地组策略编辑</p>
-<blockquote>
-<p><a href="https://www.xitongcheng.com/jiaocheng/win10_article_62313.html">参考连接</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>gpedit.msc</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>局域网共享剪贴板</title>
     <url>/2023/12/18/%E5%B1%80%E5%9F%9F%E7%BD%91%E5%85%B1%E4%BA%AB%E5%89%AA%E8%B4%B4%E6%9D%BF/</url>
     <content><![CDATA[<h1 id="局域网共享剪贴板"><a href="#局域网共享剪贴板" class="headerlink" title="局域网共享剪贴板"></a>局域网共享剪贴板</h1><p>[toc]</p>
@@ -566,6 +543,29 @@
       </categories>
       <tags>
         <tag>network share</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法</title>
+    <url>/2023/12/18/%E5%AE%B6%E5%BA%AD%E7%89%88Windows%E6%9C%AC%E5%9C%B0%E7%BB%84%E7%AD%96%E7%95%A5%E7%BC%96%E8%BE%91%EF%BC%88gpedit.msc%EF%BC%89%E4%B8%8D%E5%AD%98%E5%9C%A8%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="家庭版Windows本地组策略编辑（gpedit-msc）不存在解决办法"><a href="#家庭版Windows本地组策略编辑（gpedit-msc）不存在解决办法" class="headerlink" title="家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法"></a>家庭版Windows本地组策略编辑（gpedit.msc）不存在解决办法</h1><p>[toc]</p>
+<p><strong>家庭版Windows无法打开gpedit.msc</strong></p>
+<p>在桌面创建一个gpedit.txt文件，打开输入以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">pushd &quot;%~dp0&quot;</span><br><span class="line">dir /b %systemroot%\Windows\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~3*.mum &gt;gp.txt</span><br><span class="line">dir /b  %systemroot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~3*.mum &gt;&gt;gp.txt</span><br><span class="line">for /f %%i in (&#x27;findstr /i . gp.txt 2^&gt;nul&#x27;) do dism /online /norestart /add-package:&quot;%systemroot%\servicing\Packages\%%i&quot;</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
+
+<p>退出，更改后缀为<code>.bat</code>，右键，点击以管理员身份运行。</p>
+<p>等待脚本执行完成。</p>
+<p>脚本执行完成后，之前写的文件可删。</p>
+<p>使用<code>win+r</code>，执行<code>gpedit.msc</code>即可打开本地组策略编辑</p>
+<blockquote>
+<p><a href="https://www.xitongcheng.com/jiaocheng/win10_article_62313.html">参考连接</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>gpedit.msc</tag>
       </tags>
   </entry>
   <entry>
